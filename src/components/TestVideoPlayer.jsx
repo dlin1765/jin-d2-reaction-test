@@ -1,9 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react';
-import video from './assets/jin-standing.mp4'
-import video2 from './assets/jin-d2.mp4'
+import video from '../assets/jin-standing.mp4'
+import video2 from '../assets/jin-d2.mp4'
+import BlurDiv from './BlurDiv.jsx';
 
-
-function TestVideoPlayer({vidInfo}){
+function TestVideoPlayer({vidInfo, videoRef, changeStateNum}){
     // startState (stateNum) (whichVideoIndex) (timeTillD2)
         // startState the video will be rendered, when you press left arrow key, it starts playing the video, the video should not loop and should not autoplay 
     // playingVidState 
@@ -32,6 +32,7 @@ function TestVideoPlayer({vidInfo}){
     let [isCounting, setCounting] = useState(false);
     const [jinStanding, willD2] = useState()
     const [shouldAutoplay, setAutoplay] = useState(false);
+    
 
     currentIndex = Math.round(0 + Math.random() * (4));
     const [counter, setCounter] = useState(0)
@@ -39,7 +40,7 @@ function TestVideoPlayer({vidInfo}){
     const min = 1;
     const max = 16;
     const vidRef = useRef(null);
-  
+    let currentTime = 0;
 
     async function setToD2(){
         const rand = (min + Math.random() * (max - min)) * 1000;
@@ -54,39 +55,71 @@ function TestVideoPlayer({vidInfo}){
         });
     };
 
+    const leftKeyPressed = (event) =>{
+        if(event.key === 'ArrowLeft'){
+          
+          videoRef.current.play();
+          
+          console.log("left arrow key pressed, state num : ");
+        }  
+    };
 
+    async function setText(){
+        changeStateNum();
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('d2 asdfasdf');
+    }
 
+    const escKeyPressed = (event) =>{
+
+    };
 
     useEffect(() => {
-        let interval;
-        if(isCounting){
-            interval = setInterval(() =>{
-                setCounter(prevCounter => prevCounter + 1);
-            }, 1);
-        }
-        return () => clearInterval(interval);
-    }, [isCounting]); 
+        window.addEventListener('keydown', leftKeyPressed);
+        window.addEventListener('keydown', escKeyPressed);
+        return() => {
+            window.removeEventListener('keydown', leftKeyPressed);
+            window.removeEventListener('keydown', escKeyPressed);
+        };
+    });
 
-    const videoRef = useRef(null);
+    
+
+
+    // useEffect(() => {
+    //     let interval;
+    //     if(isCounting){
+    //         interval = setInterval(() =>{
+    //             vidHandler();
+    //         }, 1);
+    //     }
+    //     return () => clearInterval(interval);
+    // }, [isCounting]); 
+
     return(
-        <div style = {{display:'flex', alignItems: 'center', flexDirection: 'column'}}>
-            <video 
-                ref = {vidRef}
-                width = '75%'
-                height = 'auto'
-                loop
-                autoPlay = {shouldAutoplay}
-                key = {currentIndex}
-            >
-               <source src={vidInfo.vid} type = "video/mp4" />
-               your browser does not support video tag
-            </video>
-            <div>
-                {vidInfo.vidLength + " " + vidInfo.d2At}
-            </div>
-
-        </div>
+        <>
+            <BlurDiv>
+                <video 
+                    ref = {videoRef}
+                    width = '75%'
+                    height = 'auto'
+                    loop = {false}
+                    autoPlay = {shouldAutoplay}
+                    key = {currentIndex}   
+                    onPlay={changeStateNum}
+                    style = {{}}
+                >
+                    <source src={vidInfo.vid} type = "video/mp4" />
+                    your browser does not support video tag
+                </video>
+                <div>
+                    {vidInfo.vidLength + " " + vidInfo.d2At}
+                </div>
+                <button style = {{height: '100%', width: '100%', background: 'transparent',position: 'absolute'}}>this is the content of the button</button>
+            </BlurDiv>
+        </>
+        
     )
 }
 
-export default TestVideoPlayer;
+export default React.memo(TestVideoPlayer);

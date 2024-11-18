@@ -8,7 +8,8 @@ function Webpage(){
 
         <div>
             <Header />
-            <TestVideoPlayer />
+           <VideoPlayer vid = {video2}/>
+        
         </div>
     </>
 }
