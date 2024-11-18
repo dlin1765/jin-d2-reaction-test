@@ -10,9 +10,9 @@ import { GameText } from './GameText.jsx';
 import { useStopwatch } from 'react-use-precision-timer';
 import { useTimer } from 'react-use-precision-timer';
 
-const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000};
-const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1};
-const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1};
+const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000, id: 0};
+const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
+const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1, id: 2};
 const vidList = [jinD2Two, jinNoThree, jinNoFour];
 const gameTextList = [
     'Can you react to Jin D2?',
@@ -36,7 +36,8 @@ const detailTextList = [
 
 export const Game = () =>{
     const [shouldBlur, setBlur] = useState(true);
-    let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (2 - 0) + 0)]);
+    let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (3 - 0) + 0)]);
+    let [prevVid, setPrevVid] = useState(randVid);
     const [gameStateNum, setGameStateNum] = useState(0);
     let [mainText, setMainText] = useState(gameTextList[0]);
     let [detailText, setDetailText] = useState(detailTextList[0]);
@@ -69,13 +70,26 @@ export const Game = () =>{
             );
         }
         else{
-            setIsVideoLoading(false);
-            setRandVid(vidList[Math.floor(Math.random() * (2 - 0) + 0)]);
             setBlur(false);
+            setPrevVid(randVid);
+            setIsVideoLoading(false);
+            let randNum = Math.floor(Math.random() * (2 - 0) + 0);
+            if(vidList[randNum] == randVid){
+                videoRef.current.play();
+                console.log("same video");
+                console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
+            }
+            else{
+                console.log("different vid");
+                console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
+            }
+            setRandVid(vidList[randNum]);
+            console.log("random number = " + randNum);
+            
             setGameStateNum(
                 (gameStateNum - 1)
             );
-            //videoRef.current.play();
+            
         }
         console.log("game state num = " + gameStateNum);
     }   
@@ -84,7 +98,6 @@ export const Game = () =>{
         setVideoPlaying(
             !isVideoPlaying
         );
-        
     }
 
     const videoDone = () =>{
@@ -104,6 +117,7 @@ export const Game = () =>{
     const CheckIfVideoLoading = () =>{
         if(gameStateNum == 1){
             videoRef.current.play();
+            //console.log(videoRef.current.);
         }
     }
 
@@ -126,12 +140,13 @@ export const Game = () =>{
             //window.removeEventListener('keydown', escKeyPressed);
         };
     });
-
+    
     useEffect(() => {
         if (videoRef.current && randVid) {
             videoRef.current.load(); // Reload the video when randVid changes
         }
     }, [randVid]);
+    
 
     const leftKeyPressed = (event) =>{
         if(event.key === 'ArrowDown'){
@@ -164,9 +179,6 @@ export const Game = () =>{
             } 
         }  
     };
-
-    
-
 
     return(
         <>

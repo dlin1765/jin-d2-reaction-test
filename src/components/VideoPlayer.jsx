@@ -3,7 +3,7 @@ import video from '../assets/jin-standing.mp4'
 import video2 from '../assets/jin-d2.mp4'
 
 
-export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFinished, videoLoading}) => {
+export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFinished, videoLoading, key}) => {
     return(
         <>
             {vid && vid.vid ?
@@ -17,6 +17,7 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
                 onPlaying={videoOnPlay}
                 onEnded={videoFinished}
                 onLoadedData={videoLoading}
+                key={key}
                 onError={
                     console.log("vid name: " + vid.vid.source)
                 }
