@@ -18,24 +18,32 @@ const gameTextList = [
     'Can you react to Jin D2?',
      'Too early!', 
      'Too late!', 
-     'Nice block!'
+     'Nice block!',
+     'Wrong reaction...',
+     'Good patience!'
+
 ];
 const detailTextList = [
     "When Jin does d2, click the video again to block, don't be late or too early!",
-    "Make sure you only click when you see the d2 animation!",
+    "You pressed down before the move started, try to only block when you see d2!",
     "You were a bit slow on the reaction, try again!",
-    "You reacted to d2! Keep it up!"
+    "You reacted to d2! Keep it up!",
+    "Make sure you only click when you see the d2 animation!",
+    "Good job only reacting to the d2 animation!"
 ];
 // play the video
 // if key down 
 
 export const Game = () =>{
     const [shouldBlur, setBlur] = useState(true);
-    const [randVid, setRandVid] = useState(vidList[Math.round(0 + Math.random() * (4))]);
+    let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (2 - 0) + 0)]);
     const [gameStateNum, setGameStateNum] = useState(0);
     let [mainText, setMainText] = useState(gameTextList[0]);
     let [detailText, setDetailText] = useState(detailTextList[0]);
+    let [clickPlayAgainText, setClickPlayAgainText] = useState("");
     const [isVideoPlaying, setVideoPlaying] = useState(false);
+    const [isVideoLoading, setIsVideoLoading] = useState(true);
+
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
     const vidTimer = useTimer();
@@ -48,38 +56,65 @@ export const Game = () =>{
             );
             setMainText(mainText = gameTextList[gameStateNum]);
             setDetailText(detailText = detailTextList[gameStateNum]);
+            setClickPlayAgainText(clickPlayAgainText = "");
             setGameStateNum(
                 (gameStateNum+1)
             );
             setBlur(false);
             videoRef.current.play();
-            if(randVid.d2At != -1){
-
-            }
-            else{
-               
-            }
-            
         }
         else if(gameStateNum == 1){
-
-        }
-        else{
             setGameStateNum(
                 (gameStateNum+1) % 3
             );
         }
+        else{
+            setIsVideoLoading(false);
+            setRandVid(vidList[Math.floor(Math.random() * (2 - 0) + 0)]);
+            setBlur(false);
+            setGameStateNum(
+                (gameStateNum - 1)
+            );
+            //videoRef.current.play();
+        }
         console.log("game state num = " + gameStateNum);
-    }
+    }   
 
     const videoOnPlay = () =>{
         setVideoPlaying(
             !isVideoPlaying
         );
+        
     }
 
     const videoDone = () =>{
-        
+        setVideoPlaying(
+            !isVideoPlaying
+        );
+        if(gameStateNum == 1 && randVid.d2At == -1){
+            displayResults(5);
+            console.log("good patience");
+        }
+        else if(gameStateNum == 1 && randVid.d2At != -1){
+            displayResults(2);
+            console.log("too late");
+        }
+    }
+
+    const CheckIfVideoLoading = () =>{
+        if(gameStateNum == 1){
+            videoRef.current.play();
+        }
+    }
+
+    function displayResults(i){
+        setBlur(true);
+        setMainText(mainText = gameTextList[i]);
+        setDetailText(detailText = detailTextList[i]);   
+        setClickPlayAgainText(clickPlayAgainText = "Click here to play again");
+        setGameStateNum(
+            (gameStateNum+1) % 3
+        );
     }
 
     useEffect(() => {
@@ -92,11 +127,39 @@ export const Game = () =>{
         };
     });
 
+    useEffect(() => {
+        if (videoRef.current && randVid) {
+            videoRef.current.load(); // Reload the video when randVid changes
+        }
+    }, [randVid]);
+
     const leftKeyPressed = (event) =>{
         if(event.key === 'ArrowDown'){
             if(gameStateNum == 1){
-                if(isVideoPlaying){
-                    console.log("vid is playing0");
+                if(randVid.d2At != -1 && isVideoPlaying){
+                    const currentTime = videoRef.current.currentTime * 1000;
+                    // d2 video and clicked early
+                    if(currentTime < randVid.d2At){
+                        console.log("too early");
+                        displayResults(1);
+                    }
+                    // d2 video and clicked right
+                    else if(currentTime > randVid.d2At  && currentTime <= (randVid.d2At + 366.6674)){
+                        console.log("blocked");
+                        displayResults(3);
+                    }
+                    // d2 video and clicked late
+                    else{
+                        console.log("too late!");
+                        displayResults(2);
+                    }
+                    console.log('current time = ' + currentTime);
+                    
+                }
+                else{
+                    // if the video has no d2 and you clicked
+                    displayResults(4);
+                    console.log("no d2 what are you reacting to!");
                 }
             } 
         }  
@@ -112,6 +175,7 @@ export const Game = () =>{
                     mainText={mainText}
                     detailText={detailText}
                     shouldBlur={shouldBlur}
+                    clickPlayAgainText={clickPlayAgainText}
                 >
                 </GameText>
                 <BlurDiv
@@ -122,10 +186,15 @@ export const Game = () =>{
                         videoClicked={videoClicked}
                         videoRef = {videoRef}
                         videoOnPlay = {videoOnPlay}
+                        videoFinished = {videoDone}
+                        videoLoading = {CheckIfVideoLoading}
                     >
                     </VideoPlayer>
                 </BlurDiv>
             </MainDiv>
+            <div>
+                {gameStateNum}
+            </div>
         </>
     );
 }

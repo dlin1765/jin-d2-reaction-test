@@ -16,4 +16,15 @@
     z-index: 1;
     margin-top: 100px;
     font-size: 21px;
+    
+}
+
+.playAgainText{
+    color: aqua;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+    margin-top: 200px;
+    font-size: 16px;
 }
