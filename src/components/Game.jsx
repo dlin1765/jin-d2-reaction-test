@@ -43,7 +43,7 @@ export const Game = () =>{
     let [detailText, setDetailText] = useState(detailTextList[0]);
     let [clickPlayAgainText, setClickPlayAgainText] = useState("");
     const [isVideoPlaying, setVideoPlaying] = useState(false);
-    const [isVideoLoading, setIsVideoLoading] = useState(true);
+    const [isVideoLoading, setIsVideoLoading] = useState(false);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
@@ -72,7 +72,7 @@ export const Game = () =>{
         else{
             setBlur(false);
             setPrevVid(randVid);
-            setIsVideoLoading(false);
+            setIsVideoLoading(true);
             let randNum = Math.floor(Math.random() * (2 - 0) + 0);
             if(vidList[randNum] == randVid){
                 videoRef.current.play();
@@ -115,6 +115,7 @@ export const Game = () =>{
     }
 
     const CheckIfVideoLoading = () =>{
+        setIsVideoLoading(false);
         if(gameStateNum == 1){
             videoRef.current.play();
             //console.log(videoRef.current.);
@@ -182,28 +183,32 @@ export const Game = () =>{
 
     return(
         <>
-            <MainDiv className={'main'}>
-                <GameText
-                    mainText={mainText}
-                    detailText={detailText}
-                    shouldBlur={shouldBlur}
-                    clickPlayAgainText={clickPlayAgainText}
-                >
-                </GameText>
-                <BlurDiv
-                    shouldBlur={shouldBlur}
-                >
-                    <VideoPlayer
-                        vid = {randVid}
-                        videoClicked={videoClicked}
-                        videoRef = {videoRef}
-                        videoOnPlay = {videoOnPlay}
-                        videoFinished = {videoDone}
-                        videoLoading = {CheckIfVideoLoading}
+            
+            <div>
+                <MainDiv className={'main'}>
+                    <GameText
+                        mainText={mainText}
+                        detailText={detailText}
+                        shouldBlur={shouldBlur}
+                        clickPlayAgainText={clickPlayAgainText}
                     >
-                    </VideoPlayer>
-                </BlurDiv>
-            </MainDiv>
+                    </GameText>
+                    <BlurDiv
+                        shouldBlur={shouldBlur}
+                    >
+                        <VideoPlayer
+                            vid = {randVid}
+                            videoClicked={videoClicked}
+                            videoRef = {videoRef}
+                            videoOnPlay = {videoOnPlay}
+                            videoFinished = {videoDone}
+                            videoLoading = {CheckIfVideoLoading}
+                            isVideoLoading = {isVideoLoading}
+                        >
+                        </VideoPlayer>
+                    </BlurDiv>
+                </MainDiv>
+            </div>
             <div>
                 {gameStateNum}
             </div>
@@ -212,8 +217,6 @@ export const Game = () =>{
 }
 
 const MainDiv = styled.div`
-    padding: 32px;
     background-color:lightblue;
     z-index: 1;
-    height: 100%;
 `;

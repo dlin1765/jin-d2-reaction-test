@@ -5,7 +5,6 @@ function Header(){
             
             <div style ={{display:'flex', 
                 backgroundColor: "white", 
-                padding: '2em', 
                 boxShadow: "0px 0px 20px 0px black", 
                 zIndex: 10, 
                 justifyContent: "center",

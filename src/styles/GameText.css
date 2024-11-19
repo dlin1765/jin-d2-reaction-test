@@ -6,6 +6,7 @@
     margin: 0;
     z-index: 1;
     text-align: center;
+    pointer-events: none;
 }
 
 .detailText{
@@ -16,7 +17,7 @@
     z-index: 1;
     margin-top: 100px;
     font-size: 21px;
-    
+    pointer-events: none;
 }
 
 .playAgainText{
@@ -27,4 +28,5 @@
     z-index: 1;
     margin-top: 200px;
     font-size: 16px;
+    pointer-events: none;
 }
