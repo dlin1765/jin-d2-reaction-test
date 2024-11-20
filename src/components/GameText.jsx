@@ -7,15 +7,17 @@ export const GameText = ({mainText, detailText, shouldBlur, clickPlayAgainText})
     return (
         <>
             
-            {shouldBlur &&
-                <h1 className={'mainText'}>{mainText}</h1>
-            }
-            {shouldBlur &&
-                <p className = {'detailText'}>{detailText}</p>
-            }
-            {shouldBlur &&
-                <p className = {'playAgainText'}>{clickPlayAgainText}</p>
-            }
+            <div className={'textContainer'}>
+                {shouldBlur &&
+                    <h1 className={'mainText'}>{mainText}</h1>
+                }
+                {shouldBlur &&
+                    <p className = {'detailText'}>{detailText}</p>
+                }
+                {shouldBlur &&
+                    <p className = {'playAgainText'}>{clickPlayAgainText}</p>
+                }
+            </div>
         </>
     );
 }

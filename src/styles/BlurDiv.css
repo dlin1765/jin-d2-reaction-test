@@ -1,4 +1,5 @@
 .defaultStyle{
+    /*
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7,16 +8,28 @@
     height: 100%;
     z-index: 0;
     box-sizing:'border-box'
+    */
+    width: 100%;
+    margin-left: -100%;
+    display: flex;
+    justify-content: center;
 }
 
 .blurStyle{
+    /*
     display: flex;
     align-items: center; 
     justify-content: center;
     flex-direction: column;
     position: relative;
     height: 100%;
-    filter: blur(20px);
+    
     z-index: 0;
     box-sizing: border-box;
+    */
+    width: 100%;
+    margin-left: -100%;
+    display: flex;
+    justify-content: center;
+    filter: blur(20px);
 }

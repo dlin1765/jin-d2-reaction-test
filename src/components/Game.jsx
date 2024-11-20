@@ -4,7 +4,9 @@ import noThreeSec from '../assets/jin-standing-3.mp4';
 import noFourSec from '../assets/jin-standing-4.mp4';
 import styled from 'styled-components';
 import BlurDiv from './BlurDiv.jsx';
+import { AboutSection } from './AboutSection.jsx';
 import '../styles/MainDiv.css'
+import '../styles/Game.css'
 import { VideoPlayer } from './VideoPlayer.jsx';
 import { GameText } from './GameText.jsx';
 import { useStopwatch } from 'react-use-precision-timer';
@@ -44,6 +46,7 @@ export const Game = () =>{
     let [clickPlayAgainText, setClickPlayAgainText] = useState("");
     const [isVideoPlaying, setVideoPlaying] = useState(false);
     const [isVideoLoading, setIsVideoLoading] = useState(false);
+    const [vidHeight, setVideoHeight] = useState(1080);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
@@ -65,9 +68,7 @@ export const Game = () =>{
             videoRef.current.play();
         }
         else if(gameStateNum == 1){
-            setGameStateNum(
-                (gameStateNum+1) % 3
-            );
+            
         }
         else{
             setBlur(false);
@@ -144,10 +145,11 @@ export const Game = () =>{
     
     useEffect(() => {
         if (videoRef.current && randVid) {
+            setVideoHeight(videoRef.current.clientHeight);
             videoRef.current.load(); // Reload the video when randVid changes
         }
     }, [randVid]);
-    
+
 
     const leftKeyPressed = (event) =>{
         if(event.key === 'ArrowDown'){
@@ -184,8 +186,9 @@ export const Game = () =>{
     return(
         <>
             
-            <div>
+            <div className={'flexParent'}>
                 <MainDiv className={'main'}>
+                    
                     <GameText
                         mainText={mainText}
                         detailText={detailText}
@@ -207,16 +210,18 @@ export const Game = () =>{
                         >
                         </VideoPlayer>
                     </BlurDiv>
+                    <div className={'fillerDiv'} style={{minHeight: `${vidHeight}px`}}>
+
+                    </div>
+
+                
                 </MainDiv>
-            </div>
-            <div>
-                {gameStateNum}
+                
             </div>
         </>
     );
 }
 
 const MainDiv = styled.div`
-    background-color:lightblue;
     z-index: 1;
 `;

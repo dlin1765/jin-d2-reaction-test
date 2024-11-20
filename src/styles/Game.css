@@ -1,0 +1,15 @@
+.flexParent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: lightblue;
+    max-height: 1080px;
+}
+
+.fillerDiv{
+    width: 100%;
+    margin-left: -100%;
+    max-height: 1080px;
+    pointer-events: none;
+}

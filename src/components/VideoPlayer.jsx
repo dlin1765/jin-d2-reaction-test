@@ -53,8 +53,7 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
             {vid && vid.vid ?
                 <video 
                     ref = {videoRef}
-                    width = '75%'
-                    height = '100%'
+                    
                     loop = {false}
                     autoPlay = {false}
                     onClick={videoClicked}
@@ -66,19 +65,16 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
                         console.log("vid name: " + vid.vid.source)
                     }
                     preload='auto'
-                    style = {{zIndex: 4}}
+                    style = {{zIndex: 4, width:'75%', height: '100%'}}
                 >
                 <source src={vid.vid} type = "video/mp4" />
                 your browser does not support video tag
                 </video> : 
             
                 <div style={{
-                    width: "75%",
-                    height: "100%",
-                    backgroundColor: "transparent",
-                    zIndex: 3
+                    
                   }}>
-
+                    loading...
                 </div>
             }
             
