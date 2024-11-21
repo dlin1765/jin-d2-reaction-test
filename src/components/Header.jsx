@@ -11,7 +11,7 @@ function Header(){
                 position: 'relative'
                 }}>
 
-                <div style={{display:"flex", flexGrow: 0, flexShrink: 1, flexBasis: '75%', alignItems:"center", justifyContent:"space-between"}}>
+                <div style={{display:"flex", flexGrow: 0, flexShrink: 1, flexBasis: '65%', alignItems:"center", justifyContent:"space-between"}}>
                         <p style = {{}}>Jin D2 Reaction Test</p>
                         <button style = {{}}>Register</button>
                 </div>

@@ -11,6 +11,9 @@ import { VideoPlayer } from './VideoPlayer.jsx';
 import { GameText } from './GameText.jsx';
 import { useStopwatch } from 'react-use-precision-timer';
 import { useTimer } from 'react-use-precision-timer';
+import { Card } from './Card.jsx';
+import { StatsCard } from './StatsCard.jsx'
+import '../styles/AboutSection.css'
 
 const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000, id: 0};
 const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
@@ -211,12 +214,14 @@ export const Game = () =>{
                         </VideoPlayer>
                     </BlurDiv>
                     <div className={'fillerDiv'} style={{minHeight: `${vidHeight}px`}}>
-
                     </div>
-
-                
                 </MainDiv>
-                
+            </div>
+            <div className='flexParent2'>
+                    <div className='flexContainer'>
+                        <StatsCard />
+                        <Card />
+                    </div>
             </div>
         </>
     );
@@ -225,3 +230,8 @@ export const Game = () =>{
 const MainDiv = styled.div`
     z-index: 1;
 `;
+
+const FlexColumn = styled.div`
+    display:flex;
+    flex-direction: column;
+`;  

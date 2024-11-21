@@ -13,3 +13,20 @@
     max-height: 1080px;
     pointer-events: none;
 }
+
+.flexContainer{
+    display:flex;
+    justify-content: space-between;
+    flex-basis: 65%;
+    flex: 0 0 65%;
+    gap: 2em;
+}
+
+.flexParent2{
+    /* #e6e8f4 */
+    display:flex;
+    justify-content: center;
+    height: 100%;
+    background-color: #e6e8f4;
+    padding-top: 2em;
+}

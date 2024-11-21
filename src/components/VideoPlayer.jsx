@@ -65,7 +65,7 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
                         console.log("vid name: " + vid.vid.source)
                     }
                     preload='auto'
-                    style = {{zIndex: 4, width:'75%', height: '100%'}}
+                    style = {{zIndex: 4, width:'65%', height: '100%'}}
                 >
                 <source src={vid.vid} type = "video/mp4" />
                 your browser does not support video tag
