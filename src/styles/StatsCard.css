@@ -13,15 +13,13 @@
     flex-grow: 1;
 }   
 
-
-
 .headerText{
     font-weight: 500;
-    font-size: 2em;
+    font-size: 3em;
 }
 
 .statsText{
     font-weight: 400;
-    font-size: large;
+    font-size: 1.5em;
     margin: 15px 0px
 }

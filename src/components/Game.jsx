@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef, useCallback} from 'react';
 import d2TwoSec from '../assets/2-jin-d2.mp4';
 import noThreeSec from '../assets/jin-standing-3.mp4';
 import noFourSec from '../assets/jin-standing-4.mp4';
+import d2Loop from '../assets/jin-just-d2.mp4'
 import styled from 'styled-components';
 import BlurDiv from './BlurDiv.jsx';
 import { AboutSection } from './AboutSection.jsx';
@@ -19,6 +20,9 @@ const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000, id: 0};
 const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
 const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1, id: 2};
 const vidList = [jinD2Two, jinNoThree, jinNoFour];
+
+const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [], avgReactionMiss: [], longestStreak: 0, wrongReactionNum: 0, id:0 };
+
 const gameTextList = [
     'Can you react to Jin D2?',
      'Too early!', 
@@ -39,6 +43,7 @@ const detailTextList = [
 // play the video
 // if key down 
 
+
 export const Game = () =>{
     const [shouldBlur, setBlur] = useState(true);
     let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (3 - 0) + 0)]);
@@ -50,6 +55,11 @@ export const Game = () =>{
     const [isVideoPlaying, setVideoPlaying] = useState(false);
     const [isVideoLoading, setIsVideoLoading] = useState(false);
     const [vidHeight, setVideoHeight] = useState(1080);
+
+    const [playerSessionData, setSessionData] = useState(defaultSessionData);
+
+    const [d2Num, incrementD2Num] = useState(0);
+    const [d2Blocked, incrementD2Blocked] = useState(0);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
@@ -114,6 +124,7 @@ export const Game = () =>{
         }
         else if(gameStateNum == 1 && randVid.d2At != -1){
             displayResults(2);
+            addD2Num();
             console.log("too late");
         }
     }
@@ -153,6 +164,25 @@ export const Game = () =>{
         }
     }, [randVid]);
 
+    useEffect(() =>{
+        // this is where I'll save stuff to local storage
+    }, [playerSessionData]);
+
+   
+
+    function addD2Num(){
+        setSessionData(prevData =>({
+            ...prevData,
+            numberOfD2s: prevData.numberOfD2s + 1
+        }));
+    };
+
+    function addD2Blocked(){
+        setSessionData(prevData =>({
+            ...prevData,
+            d2sBlocked: prevData.d2sBlocked + 1
+        }));
+    }
 
     const leftKeyPressed = (event) =>{
         if(event.key === 'ArrowDown'){
@@ -167,6 +197,7 @@ export const Game = () =>{
                     // d2 video and clicked right
                     else if(currentTime > randVid.d2At  && currentTime <= (randVid.d2At + 366.6674)){
                         console.log("blocked");
+                        addD2Blocked(d2Blocked+1);
                         displayResults(3);
                     }
                     // d2 video and clicked late
@@ -175,7 +206,7 @@ export const Game = () =>{
                         displayResults(2);
                     }
                     console.log('current time = ' + currentTime);
-                    
+                    addD2Num(d2Num);
                 }
                 else{
                     // if the video has no d2 and you clicked
@@ -219,9 +250,58 @@ export const Game = () =>{
             </div>
             <div className='flexParent2'>
                     <div className='flexContainer'>
-                        <StatsCard />
-                        <Card />
+                        <StatsCard
+                            pd={playerSessionData}
+                        />
+                        <Card>
+                            <div className ='headerText'>What is Jin d2?</div>
+                            <div className ='cardText'>
+                                d2 is one of Jin's signature and most annoying lows in Tekken 8
+                            </div>
+                            <video
+                                loop = {true}
+                                autoPlay = {true}
+                                playsInline
+                                muted
+                                width={'100%'}
+                                style={{objectFit: 'contain'}}
+                            >
+                                <source src = {d2Loop} type = "video/mp4" />
+                            </video>
+                            <div className ='bolderText'>Why should you learn to react to it?</div>
+                            <div className ='cardText'>
+                                d2 is an high crushing low with good tracking that also launches on counterhit . On top of all that, it's also only <strong>-14 on block.</strong>
+                            </div>
+                            <div className='cardText'>
+                            This means that most characters won't be able to launch punish it, making d2 a relatively low risk move considering its properties and the reward Jin can get on hit.
+                            </div>
+                            <div className='cardText'>
+                                This move also synergizes perfectly with the rest of Jin's moveset since it evades highs, the moves commonly used to control and prevent Jin from doing his bigger higher reward moves. 
+                            </div>
+                            <div className='cardText'>
+                            Just the threat of d2 might stop someone from playing keepout or applying pressure, giving the Jin player free rein to do whatever they want.
+                            </div>
+                            <div className='cardText'>
+                                d2 combined with Jin's excellent neutral pokes, high reward launchers, plus frame moves, and panic moves makes him an incredibly difficult character to deal with, especially online.
+                            </div>
+                            <div className='cardText'>
+                                Training yourself to recognize the animation even if you can only do it semi-consistently solves one piece of the puzzle and lets you focus on other areas of the match.
+                            </div> 
+                        </Card>
                     </div>
+            </div>
+
+            <div className = 'flexParent2'>
+                <div className='flexContainer'>
+                    <Card>
+
+                    </Card>
+                </div>
+            </div>
+
+            <div className = 'flexParent2'>
+                <div className='flexContainer'>
+                </div>
             </div>
         </>
     );

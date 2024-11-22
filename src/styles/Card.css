@@ -20,6 +20,12 @@
     font-size: 2em;
 }
 
+.bolderText{
+    font-weight: 300;
+    font-size: 2em;
+    margin: 15px 0px;
+}
+
 .cardText{
     font-weight: 400;
     font-size: large;
