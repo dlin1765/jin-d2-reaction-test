@@ -21,7 +21,7 @@ const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
 const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1, id: 2};
 const vidList = [jinD2Two, jinNoThree, jinNoFour];
 
-const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [], avgReactionMiss: [], longestStreak: 0, wrongReactionNum: 0, id:0 };
+const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, id:0 };
 
 const gameTextList = [
     'Can you react to Jin D2?',
@@ -40,8 +40,20 @@ const detailTextList = [
     "Make sure you only click when you see the d2 animation!",
     "Good job only reacting to the d2 animation!"
 ];
-// play the video
-// if key down 
+
+
+// To-do
+// fix line height in body text and central text
+// pick a font for the website
+// pick a color scheme for the website
+// fix letter spacing for leader (negative line height)
+// 50-75 characters long for text paragraphs
+// two different font sizes for text
+// 
+// change d2 about section (change header text), remove why you should learn to react to it
+// make them bullet points 
+
+// figure out what the stats page should look like 
 
 
 export const Game = () =>{
@@ -57,9 +69,6 @@ export const Game = () =>{
     const [vidHeight, setVideoHeight] = useState(1080);
 
     const [playerSessionData, setSessionData] = useState(defaultSessionData);
-
-    const [d2Num, incrementD2Num] = useState(0);
-    const [d2Blocked, incrementD2Blocked] = useState(0);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
@@ -125,6 +134,8 @@ export const Game = () =>{
         else if(gameStateNum == 1 && randVid.d2At != -1){
             displayResults(2);
             addD2Num();
+            addD2BlockStreak(false);
+            setMissedReactions();
             console.log("too late");
         }
     }
@@ -184,6 +195,51 @@ export const Game = () =>{
         }));
     }
 
+    function addD2BlockStreak(successfulBlock){
+        if(successfulBlock){
+            if(playerSessionData.longestStreak[0] + 1 > playerSessionData.longestStreak[1]){
+                setSessionData(prevData =>({
+                    ...prevData,
+                    longestStreak: [prevData.longestStreak[0] + 1, prevData.longestStreak[0] + 1]
+                })); 
+            }
+            else{
+                setSessionData(prevData =>({
+                    ...prevData,
+                    longestStreak: [prevData.longestStreak[0] + 1, prevData.longestStreak[1]]
+                })); 
+            }
+        }
+        else{
+            setSessionData(prevData =>({
+                ...prevData,
+                longestStreak: [0, prevData.longestStreak[1]]
+            })); 
+        }
+        
+    }
+
+    function setReactionTime(newReaction){
+        setSessionData(prevData =>({
+            ...prevData,
+            avgReactionTimeD2: [prevData.avgReactionTimeD2[0] + (newReaction), prevData.avgReactionTimeD2[1] + 1]
+        }));
+    }
+
+    function setReactionTimeEarly(newReaction){
+        setSessionData(prevData =>({
+            ...prevData,
+            avgReactionMiss: [prevData.avgReactionMiss[0] + (newReaction), prevData.avgReactionMiss[1] + 1]
+        }));
+    }
+
+    function setMissedReactions(){
+        setSessionData(prevData =>({
+            ...prevData,
+            wrongReactionNum: prevData.wrongReactionNum + 1
+        }));
+    }
+
     const leftKeyPressed = (event) =>{
         if(event.key === 'ArrowDown'){
             if(gameStateNum == 1){
@@ -192,25 +248,33 @@ export const Game = () =>{
                     // d2 video and clicked early
                     if(currentTime < randVid.d2At){
                         console.log("too early");
+                        addD2BlockStreak(false);
                         displayResults(1);
                     }
                     // d2 video and clicked right
                     else if(currentTime > randVid.d2At  && currentTime <= (randVid.d2At + 366.6674)){
                         console.log("blocked");
-                        addD2Blocked(d2Blocked+1);
+                        addD2Blocked();
+                        setReactionTime(((currentTime - randVid.d2At)));
+                        addD2BlockStreak(true);
                         displayResults(3);
                     }
                     // d2 video and clicked late
                     else{
                         console.log("too late!");
+                        setReactionTime(((currentTime - randVid.d2At)));
+                        setReactionTimeEarly(((currentTime - (randVid.d2At + 366.6674))));
+                        addD2BlockStreak(false);
                         displayResults(2);
                     }
                     console.log('current time = ' + currentTime);
-                    addD2Num(d2Num);
+                    addD2Num();
                 }
                 else{
                     // if the video has no d2 and you clicked
                     displayResults(4);
+                    addD2BlockStreak(false);
+                    setMissedReactions();
                     console.log("no d2 what are you reacting to!");
                 }
             } 
