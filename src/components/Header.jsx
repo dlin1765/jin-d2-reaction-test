@@ -12,8 +12,8 @@ function Header(){
                 }}>
 
                 <div style={{display:"flex", flexGrow: 0, flexShrink: 1, flexBasis: '65%', alignItems:"center", justifyContent:"space-between"}}>
-                        <p style = {{}}>Jin D2 Reaction Test</p>
-                        <button style = {{}}>Register</button>
+                        <p style = {{fontSize: '18px', fontWeight: '400', lineHeight: .5, margin: 0}}>Jin d2 Reaction Test</p>
+                        <button style = {{fontSize: '18px', fontWeight: '400'}}>Register</button>
                 </div>
             </div>
         

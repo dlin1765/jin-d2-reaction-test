@@ -1,20 +1,28 @@
 .mainText{
-    
-    font-weight: bolder;
-    color: aqua;
+    font-size: 47.1px;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+    text-shadow: #000 0px 0px 1px;
     /*text-align: center;*/
     pointer-events: none;
+    letter-spacing: .5px;
 }
 
 .detailText{
-    color: aqua;
+    color: white;
+    font-weight: 500;
     pointer-events: none;
+    font-size: 18px;
+    margin-top: 0px;
 }
 
 .playAgainText{
-    color: aqua;
-    font-size: 16px;
+    color: white;
+    font-size: 18px;
+    font-weight: 100;
     pointer-events: none;
+    margin: 0;
 }
 
 .textContainer{

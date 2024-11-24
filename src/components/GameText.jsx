@@ -2,14 +2,14 @@ import '../styles/GameText.css'
 import styled from 'styled-components';
 import CustomCounter from '../components/CustomCounter.jsx';
 
-export const GameText = ({mainText, detailText, shouldBlur, clickPlayAgainText}) =>{
+export const GameText = ({mainText, detailText, shouldBlur, clickPlayAgainText, reactionSpeed}) =>{
 
     return (
         <>
             
             <div className={'textContainer'}>
                 {shouldBlur &&
-                    <h1 className={'mainText'}>{mainText}</h1>
+                    <h1 className={'mainText'}>{mainText} {reactionSpeed != -1 ? Math.floor(reactionSpeed) +'ms' : ''}</h1>
                 }
                 {shouldBlur &&
                     <p className = {'detailText'}>{detailText}</p>

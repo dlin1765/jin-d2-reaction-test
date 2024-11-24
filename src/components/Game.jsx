@@ -54,6 +54,10 @@ const detailTextList = [
 // make them bullet points 
 
 // figure out what the stats page should look like 
+// find bug where it says the video is no d2 but it actually is 
+// - its because sarah's reaction time is so slow that the video stops playing so it ju
+
+// stretch goal: get a global counter of how many d2s and how many blocked 
 
 
 export const Game = () =>{
@@ -67,13 +71,14 @@ export const Game = () =>{
     const [isVideoPlaying, setVideoPlaying] = useState(false);
     const [isVideoLoading, setIsVideoLoading] = useState(false);
     const [vidHeight, setVideoHeight] = useState(1080);
-
+    const [reactionSpeed, setCurrentReactionTime] = useState(-1);
     const [playerSessionData, setSessionData] = useState(defaultSessionData);
+    const [allowsLocalStorage, setAllowsLocalStorage] = useState(true);
+    const [sessionId, setSessionID] = useState('');
+    const [hasRendered, setHasRendered] = useState(false);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
-    const vidTimer = useTimer();
-    const stopWatch = useStopwatch();
 
     const videoClicked = () =>{
         if(gameStateNum == 0){
@@ -90,7 +95,45 @@ export const Game = () =>{
             videoRef.current.play();
         }
         else if(gameStateNum == 1){
-            
+                if(randVid.d2At != -1 && isVideoPlaying){
+                    const currentTime = videoRef.current.currentTime * 1000;
+                    const moveAt = Math.abs(randVid.d2At);
+                    // d2 video and clicked early
+                    if(currentTime < moveAt){
+                        console.log("too early");
+                        addD2BlockStreak(false);
+                        setCurrentReactionTime(-1);
+                        displayResults(1);
+                    }
+                    // d2 video and clicked right
+                    else if(currentTime > moveAt  && currentTime <= (moveAt + 366.6674)){
+                        console.log("blocked");
+                        addD2Blocked();
+                        setReactionTime(((currentTime - moveAt)));
+                        setCurrentReactionTime(currentTime - moveAt);
+                        addD2BlockStreak(true);
+                        displayResults(3);
+                    }
+                    // d2 video and clicked late
+                    else{
+                        console.log("too late!");
+                        setReactionTime(((currentTime - moveAt)));
+                        setCurrentReactionTime(currentTime - moveAt);
+                        setReactionTimeEarly(((currentTime - (moveAt + 366.6674))));
+                        addD2BlockStreak(false);
+                        displayResults(2);
+                    }
+                    console.log('current time = ' + currentTime);
+                    addD2Num();
+                }
+                else{
+                    // if the video has no d2 and you clicked
+                    displayResults(4);
+                    addD2BlockStreak(false);
+                    setCurrentReactionTime(-1);
+                    setMissedReactions();
+                    console.log("no d2 what are you reacting to!");
+                } 
         }
         else{
             setBlur(false);
@@ -119,23 +162,26 @@ export const Game = () =>{
 
     const videoOnPlay = () =>{
         setVideoPlaying(
-            !isVideoPlaying
+            true
         );
     }
 
     const videoDone = () =>{
         setVideoPlaying(
-            !isVideoPlaying
+            false
         );
         if(gameStateNum == 1 && randVid.d2At == -1){
             displayResults(5);
             console.log("good patience");
+            setCurrentReactionTime(-1);
         }
         else if(gameStateNum == 1 && randVid.d2At != -1){
             displayResults(2);
             addD2Num();
             addD2BlockStreak(false);
-            setMissedReactions();
+            setCurrentReactionTime(videoRef.current.currentTime * 1000 -  randVid.d2At);
+            setReactionTime(((videoRef.current.currentTime * 1000 - randVid.d2At)));
+            setReactionTimeEarly(((videoRef.current.currentTime * 1000 - (randVid.d2At + 366.6674))));
             console.log("too late");
         }
     }
@@ -177,9 +223,44 @@ export const Game = () =>{
 
     useEffect(() =>{
         // this is where I'll save stuff to local storage
-    }, [playerSessionData]);
+        console.log("player session data changed");
 
-   
+        if(allowsLocalStorage && sessionId != ''){
+            let temp = localStorage.getItem(sessionId);
+            if(temp == null){  
+                console.log("current session id has no data");
+                localStorage.setItem(sessionId, JSON.stringify(playerSessionData));
+                let sessionIds = localStorage.getItem('sessions');
+                if(sessionIds == null){
+                    console.log("session id list is empty");
+                    localStorage.setItem('sessions', JSON.stringify([sessionId]));
+                }
+                else{
+                    console.log("session id list is not empty, adding new session id");
+                    let ids = JSON.parse(sessionIds);
+                    ids.push(sessionId);
+                    localStorage.setItem("sessions", JSON.stringify(ids));
+                }
+            }
+            else if(temp != null){
+                console.log("current session id has data updating info");
+                localStorage.setItem(sessionId, JSON.stringify(playerSessionData))
+            }
+        }
+    }, [playerSessionData, sessionId]);
+    // when playersessiondata changes, update the object, and store it in local storage
+    // unique session id, set item playerdata
+
+    useEffect(()=>{
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+          } catch (error) {
+            setAllowsLocalStorage(false);
+          }
+          setAllowsLocalStorage(true);
+          setSessionID(crypto.randomUUID());
+    },[]);  
 
     function addD2Num(){
         setSessionData(prevData =>({
@@ -242,43 +323,8 @@ export const Game = () =>{
 
     const leftKeyPressed = (event) =>{
         if(event.key === 'ArrowDown'){
-            if(gameStateNum == 1){
-                if(randVid.d2At != -1 && isVideoPlaying){
-                    const currentTime = videoRef.current.currentTime * 1000;
-                    // d2 video and clicked early
-                    if(currentTime < randVid.d2At){
-                        console.log("too early");
-                        addD2BlockStreak(false);
-                        displayResults(1);
-                    }
-                    // d2 video and clicked right
-                    else if(currentTime > randVid.d2At  && currentTime <= (randVid.d2At + 366.6674)){
-                        console.log("blocked");
-                        addD2Blocked();
-                        setReactionTime(((currentTime - randVid.d2At)));
-                        addD2BlockStreak(true);
-                        displayResults(3);
-                    }
-                    // d2 video and clicked late
-                    else{
-                        console.log("too late!");
-                        setReactionTime(((currentTime - randVid.d2At)));
-                        setReactionTimeEarly(((currentTime - (randVid.d2At + 366.6674))));
-                        addD2BlockStreak(false);
-                        displayResults(2);
-                    }
-                    console.log('current time = ' + currentTime);
-                    addD2Num();
-                }
-                else{
-                    // if the video has no d2 and you clicked
-                    displayResults(4);
-                    addD2BlockStreak(false);
-                    setMissedReactions();
-                    console.log("no d2 what are you reacting to!");
-                }
-            } 
         }  
+            
     };
 
     return(
@@ -292,6 +338,7 @@ export const Game = () =>{
                         detailText={detailText}
                         shouldBlur={shouldBlur}
                         clickPlayAgainText={clickPlayAgainText}
+                        reactionSpeed = {reactionSpeed}
                     >
                     </GameText>
                     <BlurDiv
@@ -314,14 +361,46 @@ export const Game = () =>{
             </div>
             <div className='flexParent2'>
                     <div className='flexContainer'>
-                        <StatsCard
-                            pd={playerSessionData}
-                        />
+                        <FlexColumn>
+                            <StatsCard>
+                                    <div className = 'headerText'>d2's blocked</div>
+                                    <FlexRow>
+                                        <div className='statsText'>Successful d2 blocks:</div>
+                                        <div className = 'statsText'><strong>{playerSessionData.d2sBlocked}</strong></div>
+                                    </FlexRow>
+                                    
+                                    <FlexRow>
+                                        <div className='statsText'>d2 block percentage:</div>
+                                        <div className = 'statsText'><strong>{playerSessionData.numberOfD2s != 0 ? (Math.ceil((playerSessionData.d2sBlocked / playerSessionData.numberOfD2s) *100)) : 0}%, {playerSessionData.d2sBlocked} / {playerSessionData.numberOfD2s}</strong></div>
+                                    </FlexRow>
+                            </StatsCard>
+                            <StatsCard>
+                                <div className = 'headerText'>Reaction statistics</div>
+                                <FlexRow>
+                                    <div className ='statsText'>Average reaction time to d2:</div>
+                                    <div className = 'statsText'><strong>{playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms</strong></div>
+                                </FlexRow>
+                                <FlexRow>
+                                    <div className ='statsText'>Longest d2 reaction streak:</div>
+                                    <div className ='statsText'><strong>{playerSessionData.longestStreak[1]}</strong></div>
+                                </FlexRow>
+                            </StatsCard>
+                            <StatsCard>
+                                <div className = 'headerText'>Missed reaction statistics</div>
+                                <FlexRow>
+                                    <div className ='statsText'>Number of wrong reactions:</div> 
+                                    <div className = 'statsText'><strong>{playerSessionData.wrongReactionNum}</strong></div>
+                                </FlexRow>
+                                <FlexRow>
+                                    <div className ='statsText'>d2 reaction miss average:</div>
+                                    <div className = 'statsText'><strong>{playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms</strong></div>
+                                </FlexRow>
+                            </StatsCard>
+                        </FlexColumn>
+                        
                         <Card>
-                            <div className ='headerText'>What is Jin d2?</div>
-                            <div className ='cardText'>
-                                d2 is one of Jin's signature and most annoying lows in Tekken 8
-                            </div>
+                            <div className ='headerText'>Jin d2</div>
+                            
                             <video
                                 loop = {true}
                                 autoPlay = {true}
@@ -332,24 +411,24 @@ export const Game = () =>{
                             >
                                 <source src = {d2Loop} type = "video/mp4" />
                             </video>
-                            <div className ='bolderText'>Why should you learn to react to it?</div>
+                            
                             <div className ='cardText'>
                                 d2 is an high crushing low with good tracking that also launches on counterhit . On top of all that, it's also only <strong>-14 on block.</strong>
                             </div>
                             <div className='cardText'>
-                            This means that most characters won't be able to launch punish it, making d2 a relatively low risk move considering its properties and the reward Jin can get on hit.
+                                - not launch punishable for majority of the cast 
                             </div>
                             <div className='cardText'>
-                                This move also synergizes perfectly with the rest of Jin's moveset since it evades highs, the moves commonly used to control and prevent Jin from doing his bigger higher reward moves. 
+                               - evades jabs and moves that are used to stop Jin from doing big moves
                             </div>
                             <div className='cardText'>
-                            Just the threat of d2 might stop someone from playing keepout or applying pressure, giving the Jin player free rein to do whatever they want.
+                                - extremely threatening which allows Jin to gain free pressure
                             </div>
                             <div className='cardText'>
-                                d2 combined with Jin's excellent neutral pokes, high reward launchers, plus frame moves, and panic moves makes him an incredibly difficult character to deal with, especially online.
+                                - synergizes with the rest of Jin's movelist
                             </div>
                             <div className='cardText'>
-                                Training yourself to recognize the animation even if you can only do it semi-consistently solves one piece of the puzzle and lets you focus on other areas of the match.
+                                Training yourself to block d2 on reaction solves one piece of the puzzle and lets you focus on other areas of the match.
                             </div> 
                         </Card>
                     </div>
@@ -358,7 +437,32 @@ export const Game = () =>{
             <div className = 'flexParent2'>
                 <div className='flexContainer'>
                     <Card>
-
+                        <FlexRow>
+                            <div className = 'headerText'>Previous sessions stats</div>
+                            {allowsLocalStorage ? 
+                                <button 
+                                    className = 'cardText'
+                                    onClick={()=>{
+                                        localStorage.clear();
+                                    }}
+                                >
+                                    Clear local storage data
+                                </button>
+                            :
+                                <div className ='cardText'>local storage disabled</div>
+                             }
+                            
+                        </FlexRow>
+                        {allowsLocalStorage ? 
+                            <div className ='cardText'>local storage enabled</div>
+                            :
+                            <div className ='cardText'>local storage disabled</div>
+                        }
+                        {allowsLocalStorage ?
+                            <div></div>
+                            :
+                            <div></div>
+                        }
                     </Card>
                 </div>
             </div>
@@ -377,5 +481,16 @@ const MainDiv = styled.div`
 
 const FlexColumn = styled.div`
     display:flex;
+    flex: 1;
     flex-direction: column;
+    justify-content: space-between;
+    gap: 29.124px;
 `;  
+
+const FlexRow = styled.div`
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+`; 
+
+//<div className ='bolderText'>Why should you learn to react to it?</div>

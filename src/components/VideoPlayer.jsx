@@ -56,7 +56,7 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
                     
                     loop = {false}
                     autoPlay = {false}
-                    onClick={videoClicked}
+                    onPointerDown={videoClicked}
                     onPlaying={videoOnPlay}
                     onEnded={videoFinished}
                     onLoadedData={videoLoading}
