@@ -18,6 +18,7 @@
 .headerText{
     font-weight: 500;
     font-size: 2em;
+    color: black;
 }
 
 .bolderText{
@@ -30,5 +31,5 @@
     font-weight: 400;
     font-size: large;
     margin: 15px 0px;
-   
+    color: black;
 }

@@ -16,10 +16,12 @@
 .headerText{
     font-weight: 500;
     font-size: 29.124px;
+    color: black;
 }
 
 .statsText{
     font-weight: 400;
     font-size: 18px;
-    margin: 15px 0px
+    margin: 15px 0px;
+    color: black;
 }
