@@ -459,7 +459,7 @@ export const Game = () =>{
                             <div className ='cardText'>local storage disabled</div>
                         }
                         {allowsLocalStorage ?
-                            <div></div>
+                            <div>graph area</div>
                             :
                             <div></div>
                         }
