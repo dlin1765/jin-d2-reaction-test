@@ -435,7 +435,7 @@ export const Game = () =>{
             </div>
 
             <div className = 'flexParent2'>
-                <div className='flexContainer'>
+                <div className='flexContain0er'>
                     <Card>
                         <FlexRow>
                             <div className = 'headerText'>Previous sessions stats</div>
