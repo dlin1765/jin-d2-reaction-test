@@ -13,13 +13,14 @@
     color: white;
     font-weight: 500;
     pointer-events: none;
-    font-size: 18px;
+    font-size: 29.124px;
     margin-top: 0px;
+    text-align: center;
 }
 
 .playAgainText{
     color: white;
-    font-size: 18px;
+    font-size: 29.124px;
     font-weight: 100;
     pointer-events: none;
     margin: 0;
@@ -32,5 +33,5 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    pointer-events: none;
+    pointer-events: none;   
 }

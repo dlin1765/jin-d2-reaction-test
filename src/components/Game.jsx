@@ -10,18 +10,19 @@ import '../styles/MainDiv.css'
 import '../styles/Game.css'
 import { VideoPlayer } from './VideoPlayer.jsx';
 import { GameText } from './GameText.jsx';
-import { useStopwatch } from 'react-use-precision-timer';
-import { useTimer } from 'react-use-precision-timer';
 import { Card } from './Card.jsx';
 import { StatsCard } from './StatsCard.jsx'
 import '../styles/AboutSection.css'
+import StatsTooltip from './StatsTooltip.jsx';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
+
 
 const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000, id: 0};
 const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
 const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1, id: 2};
 const vidList = [jinD2Two, jinNoThree, jinNoFour];
 
-const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, id:0 };
+const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, blockPercentage: 0, id: '|'};
 
 const gameTextList = [
     'Can you react to Jin D2?',
@@ -67,7 +68,7 @@ export const Game = () =>{
     const [gameStateNum, setGameStateNum] = useState(0);
     let [mainText, setMainText] = useState(gameTextList[0]);
     let [detailText, setDetailText] = useState(detailTextList[0]);
-    let [clickPlayAgainText, setClickPlayAgainText] = useState("");
+    let [clickPlayAgainText, setClickPlayAgainText] = useState("There's a chance Jin may not even do d2, so be alert!");
     const [isVideoPlaying, setVideoPlaying] = useState(false);
     const [isVideoLoading, setIsVideoLoading] = useState(false);
     const [vidHeight, setVideoHeight] = useState(1080);
@@ -75,10 +76,12 @@ export const Game = () =>{
     const [playerSessionData, setSessionData] = useState(defaultSessionData);
     const [allowsLocalStorage, setAllowsLocalStorage] = useState(true);
     const [sessionId, setSessionID] = useState('');
-    const [hasRendered, setHasRendered] = useState(false);
+    const [previousPlayerData, setPreviousData] = useState([]);
+    const [renderOnce, setRenderOnce] = useState(false);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
+    const blurRef = useRef(null);
 
     const videoClicked = () =>{
         if(gameStateNum == 0){
@@ -87,7 +90,7 @@ export const Game = () =>{
             );
             setMainText(mainText = gameTextList[gameStateNum]);
             setDetailText(detailText = detailTextList[gameStateNum]);
-            setClickPlayAgainText(clickPlayAgainText = "");
+            setClickPlayAgainText(clickPlayAgainText = "There's a chance Jin may not even do d2, so be alert!");
             setGameStateNum(
                 (gameStateNum+1)
             );
@@ -124,6 +127,7 @@ export const Game = () =>{
                         displayResults(2);
                     }
                     console.log('current time = ' + currentTime);
+                    setGameStateNum(gameStateNum + 1);
                     addD2Num();
                 }
                 else{
@@ -141,6 +145,7 @@ export const Game = () =>{
             setIsVideoLoading(true);
             let randNum = Math.floor(Math.random() * (2 - 0) + 0);
             if(vidList[randNum] == randVid){
+                videoRef.current.load();
                 videoRef.current.play();
                 console.log("same video");
                 console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
@@ -203,16 +208,6 @@ export const Game = () =>{
             (gameStateNum+1) % 3
         );
     }
-
-    useEffect(() => {
-        window.addEventListener('keydown', leftKeyPressed);
-        //window.addEventListener('keydown', escKeyPressed);
-
-        return() => {
-            window.removeEventListener('keydown', leftKeyPressed);
-            //window.removeEventListener('keydown', escKeyPressed);
-        };
-    });
     
     useEffect(() => {
         if (videoRef.current && randVid) {
@@ -220,6 +215,12 @@ export const Game = () =>{
             videoRef.current.load(); // Reload the video when randVid changes
         }
     }, [randVid]);
+
+    useEffect(()=>{
+        console.log(videoRef.current.clientHeight);
+        setVideoHeight(videoRef.current.clientHeight);
+       
+    }, [videoRef]);
 
     useEffect(() =>{
         // this is where I'll save stuff to local storage
@@ -246,6 +247,7 @@ export const Game = () =>{
                 console.log("current session id has data updating info");
                 localStorage.setItem(sessionId, JSON.stringify(playerSessionData))
             }
+            setRenderOnce(true);
         }
     }, [playerSessionData, sessionId]);
     // when playersessiondata changes, update the object, and store it in local storage
@@ -260,12 +262,15 @@ export const Game = () =>{
           }
           setAllowsLocalStorage(true);
           setSessionID(crypto.randomUUID());
+          setRenderOnce(true);
+          setPreviousData(getLocalData());
     },[]);  
 
     function addD2Num(){
         setSessionData(prevData =>({
             ...prevData,
-            numberOfD2s: prevData.numberOfD2s + 1
+            numberOfD2s: prevData.numberOfD2s + 1,
+            blockPercentage: Math.ceil((prevData.d2sBlocked / (prevData.numberOfD2s+1)) * 100)
         }));
     };
 
@@ -275,6 +280,8 @@ export const Game = () =>{
             d2sBlocked: prevData.d2sBlocked + 1
         }));
     }
+
+
 
     function addD2BlockStreak(successfulBlock){
         if(successfulBlock){
@@ -321,11 +328,19 @@ export const Game = () =>{
         }));
     }
 
-    const leftKeyPressed = (event) =>{
-        if(event.key === 'ArrowDown'){
-        }  
-            
-    };
+    function getLocalData(){
+        if(allowsLocalStorage){
+            let sessionList = JSON.parse(localStorage.getItem('sessions'));
+            let newlist = [];
+            if(sessionList != null){
+                sessionList.forEach(element => {
+                    newlist.push(JSON.parse(localStorage.getItem(element)))
+                });
+            }
+            return newlist;
+        }
+        return [];
+    }
 
     return(
         <>
@@ -343,6 +358,7 @@ export const Game = () =>{
                     </GameText>
                     <BlurDiv
                         shouldBlur={shouldBlur}
+                        ref = {blurRef}
                     >
                         <VideoPlayer
                             vid = {randVid}
@@ -371,7 +387,7 @@ export const Game = () =>{
                                     
                                     <FlexRow>
                                         <div className='statsText'>d2 block percentage:</div>
-                                        <div className = 'statsText'><strong>{playerSessionData.numberOfD2s != 0 ? (Math.ceil((playerSessionData.d2sBlocked / playerSessionData.numberOfD2s) *100)) : 0}%, {playerSessionData.d2sBlocked} / {playerSessionData.numberOfD2s}</strong></div>
+                                        <div className = 'statsText'><strong>{playerSessionData.numberOfD2s != 0 ? (playerSessionData.blockPercentage) : 0}%, {playerSessionData.d2sBlocked} / {playerSessionData.numberOfD2s}</strong></div>
                                     </FlexRow>
                             </StatsCard>
                             <StatsCard>
@@ -433,9 +449,9 @@ export const Game = () =>{
                         </Card>
                     </div>
             </div>
-
+            
             <div className = 'flexParent2'>
-                <div className='flexContain0er'>
+                <div className='flexContainer'>
                     <Card>
                         <FlexRow>
                             <div className = 'headerText'>Previous sessions stats</div>
@@ -453,16 +469,38 @@ export const Game = () =>{
                              }
                             
                         </FlexRow>
-                        {allowsLocalStorage ? 
-                            <div className ='cardText'>local storage enabled</div>
-                            :
-                            <div className ='cardText'>local storage disabled</div>
-                        }
-                        {allowsLocalStorage ?
-                            <div>graph area</div>
-                            :
-                            <div></div>
-                        }
+                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                            {allowsLocalStorage ?
+                                <LineChart
+                                    width = {800}
+                                    height = {400}
+                                    margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                                    data={previousPlayerData}
+                                >
+                                    <CartesianGrid stroke="#ccc" />
+                                    <XAxis>
+                                    <Label
+                                        value={'previous play sessions'}
+                                        offset={0}
+                                        position={'insideBottom'}
+                                    />
+                                    </XAxis>
+                                    <YAxis
+                                        label={{value: 'd2 block %', angle: -90, position: 'insideLeft'}}
+                                    />
+                                    <Line type="monotone" dataKey="blockPercentage" stroke="#82ca9d" />
+                                    <Tooltip
+                                        content={<StatsTooltip
+                                            payload={previousPlayerData}
+                                        />}
+                                    />
+                                </LineChart>
+                                :
+                                <div className ='cardText'>local storage disabled</div>
+                            }
+                        </div>
+                       
+                        
                     </Card>
                 </div>
             </div>

@@ -1,0 +1,26 @@
+.header{
+    font-size: 18px;
+    color: black;
+    font-weight: 500;
+}
+
+.label{
+    margin: 0;
+    font-size: 18px;
+    color: black;
+}
+
+.otherStats{
+    font-size: 18px;
+    color: black;
+    margin: 0;
+}
+
+.custom-tooltip{
+    display: flex;
+    background-color: lightgrey;
+    opacity: 50%;
+    flex-direction: column;
+    padding: 8px 4px;
+    margin: 0;
+};
