@@ -1,0 +1,8 @@
+.buttonContainer{
+    display:flex;
+    align-items: center;
+}
+
+.icon{
+    height:32px;
+}

@@ -5,6 +5,7 @@ import noFourSec from '../assets/jin-standing-4.mp4';
 import d2Loop from '../assets/jin-just-d2.mp4'
 import styled from 'styled-components';
 import BlurDiv from './BlurDiv.jsx';
+import Button from './Button.jsx'
 import { AboutSection } from './AboutSection.jsx';
 import '../styles/MainDiv.css'
 import '../styles/Game.css'
@@ -379,7 +380,10 @@ export const Game = () =>{
                     <div className='flexContainer'>
                         <FlexColumn>
                             <StatsCard>
-                                    <div className = 'headerText'>d2's blocked</div>
+                                    <FlexRow>
+                                        <div className = 'headerText'>d2's blocked</div>
+                                        <Button />
+                                    </FlexRow>
                                     <FlexRow>
                                         <div className='statsText'>Successful d2 blocks:</div>
                                         <div className = 'statsText'><strong>{playerSessionData.d2sBlocked}</strong></div>
@@ -421,6 +425,7 @@ export const Game = () =>{
                                 loop = {true}
                                 autoPlay = {true}
                                 playsInline
+                                webkitPlaysinline
                                 muted
                                 width={'100%'}
                                 style={{objectFit: 'contain'}}

@@ -1,9 +1,11 @@
+import '../styles/Button.css'
+
 function Button(){
-
-
     return(
         <>
-            <button style ={{background: 'transparent', width:'100%', display: 'block'}}>here is some example text</button>
+            <div className ='buttonContainer'>
+                <img src='src/assets/copy-logo.png' className ='icon'></img>
+            </div>
         </>
     );
 }
