@@ -8,9 +8,8 @@ import VideoPlayerWrapper from '../components/VideoPlayerWrapper.jsx'
 import { AboutSection } from './AboutSection.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
+  
 
-        
 //   <div style = {{padding: "32px", backgroundColor:'lightblue', zIndex: 2}}>
 //   <VideoPlayer />
 // </div>

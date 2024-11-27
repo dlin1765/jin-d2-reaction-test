@@ -53,7 +53,7 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
             {vid && vid.vid ?
                 <video 
                     ref = {videoRef}
-                    
+                    playsInline = {true}
                     loop = {false}
                     autoPlay = {false}
                     onPointerDown={videoClicked}

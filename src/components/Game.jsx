@@ -17,7 +17,6 @@ import '../styles/AboutSection.css'
 import StatsTooltip from './StatsTooltip.jsx';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
 
-
 const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000, id: 0};
 const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
 const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1, id: 2};
@@ -82,7 +81,6 @@ export const Game = () =>{
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
-    const blurRef = useRef(null);
 
     const videoClicked = () =>{
         if(gameStateNum == 0){
@@ -282,8 +280,6 @@ export const Game = () =>{
         }));
     }
 
-
-
     function addD2BlockStreak(successfulBlock){
         if(successfulBlock){
             if(playerSessionData.longestStreak[0] + 1 > playerSessionData.longestStreak[1]){
@@ -343,6 +339,12 @@ export const Game = () =>{
         return [];
     }
 
+    const getStatsButtonClicked = () =>{
+        navigator.clipboard.writeText(
+            `Jin d2 reaction test\n🎯 ${playerSessionData.d2sBlocked}/${playerSessionData.numberOfD2s} blocked\n⏱️ ${playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms avg\n🔥 ${playerSessionData.longestStreak[1]} streak\n⁉️ ${playerSessionData.wrongReactionNum} wrong reactions\n✖️ late by ${playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms avg`
+        );
+    }
+
     return(
         <>
             
@@ -359,7 +361,6 @@ export const Game = () =>{
                     </GameText>
                     <BlurDiv
                         shouldBlur={shouldBlur}
-                        ref = {blurRef}
                     >
                         <VideoPlayer
                             vid = {randVid}
@@ -381,8 +382,7 @@ export const Game = () =>{
                         <FlexColumn>
                             <StatsCard>
                                     <FlexRow>
-                                        <div className = 'headerText'>d2's blocked</div>
-                                        <Button />
+                                        <div className = 'headerText'><strong>d2's blocked</strong></div>
                                     </FlexRow>
                                     <FlexRow>
                                         <div className='statsText'>Successful d2 blocks:</div>
@@ -395,7 +395,7 @@ export const Game = () =>{
                                     </FlexRow>
                             </StatsCard>
                             <StatsCard>
-                                <div className = 'headerText'>Reaction statistics</div>
+                                <div className = 'headerText'><strong>Reaction statistics</strong></div>
                                 <FlexRow>
                                     <div className ='statsText'>Average reaction time to d2:</div>
                                     <div className = 'statsText'><strong>{playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms</strong></div>
@@ -406,7 +406,7 @@ export const Game = () =>{
                                 </FlexRow>
                             </StatsCard>
                             <StatsCard>
-                                <div className = 'headerText'>Missed reaction statistics</div>
+                                <div className = 'headerText'><strong>Missed reaction statistics</strong></div>
                                 <FlexRow>
                                     <div className ='statsText'>Number of wrong reactions:</div> 
                                     <div className = 'statsText'><strong>{playerSessionData.wrongReactionNum}</strong></div>
@@ -415,39 +415,36 @@ export const Game = () =>{
                                     <div className ='statsText'>d2 reaction miss average:</div>
                                     <div className = 'statsText'><strong>{playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms</strong></div>
                                 </FlexRow>
+                                <Button 
+                                    onClick={getStatsButtonClicked}
+                                />
                             </StatsCard>
                         </FlexColumn>
                         
                         <Card>
-                            <div className ='headerText'>Jin d2</div>
+                            <div className ='headerText'><strong>Jin d2</strong></div>
                             
                             <video
                                 loop = {true}
                                 autoPlay = {true}
                                 playsInline
-                                webkitPlaysinline
                                 muted
                                 width={'100%'}
-                                style={{objectFit: 'contain'}}
+                                style={{objectFit: 'contain', margin: '0px 0px 12.182px 0px'}}
                             >
                                 <source src = {d2Loop} type = "video/mp4" />
                             </video>
                             
-                            <div className ='cardText'>
-                                d2 is an high crushing low with good tracking that also launches on counterhit . On top of all that, it's also only <strong>-14 on block.</strong>
+                            
+                            <div className ='cardText1'>
+                                Why d2 is good
                             </div>
-                            <div className='cardText'>
-                                - not launch punishable for majority of the cast 
-                            </div>
-                            <div className='cardText'>
-                               - evades jabs and moves that are used to stop Jin from doing big moves
-                            </div>
-                            <div className='cardText'>
-                                - extremely threatening which allows Jin to gain free pressure
-                            </div>
-                            <div className='cardText'>
-                                - synergizes with the rest of Jin's movelist
-                            </div>
+                            <ul className = 'bulletList'> 
+                                <li className="cardText">high crushing counterhit launching low</li>
+                                <li className="cardText">only <strong>-14 on block</strong> which is not launch punishable for majority of the cast</li>
+                                <li className="cardText">evades jabs and moves that are used to stop Jin from doing big moves</li>
+                                <li className="cardText">synergizes with the rest of Jin's movelist</li>
+                            </ul>
                             <div className='cardText'>
                                 Training yourself to block d2 on reaction solves one piece of the puzzle and lets you focus on other areas of the match.
                             </div> 
@@ -458,7 +455,7 @@ export const Game = () =>{
             <div className = 'flexParent2'>
                 <div className='flexContainer'>
                     <Card>
-                        <FlexRow>
+                        <FlexRow style={{margin: '0 0 15px 0'}}>
                             <div className = 'headerText'>Previous sessions stats</div>
                             {allowsLocalStorage ? 
                                 <button 
