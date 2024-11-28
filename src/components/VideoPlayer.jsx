@@ -47,7 +47,7 @@ import video2 from '../assets/jin-d2.mp4'
             }
 
 */
-export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFinished, videoLoading, key, isVideoLoading}) => {
+export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFinished, videoLoading, key, isVideoLoading, canVideoPlayFirstFrame}) => {
     return(
         <>
             {vid && vid.vid ?
@@ -60,6 +60,7 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
                     onPlaying={videoOnPlay}
                     onEnded={videoFinished}
                     onLoadedData={videoLoading}
+                    onCanPlay={canVideoPlayFirstFrame}
                     key={key}
                     onError={
                         console.log("vid name: " + vid.vid.source)

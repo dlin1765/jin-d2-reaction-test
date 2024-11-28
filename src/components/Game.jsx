@@ -1,7 +1,17 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-import d2TwoSec from '../assets/2-jin-d2.mp4';
-import noThreeSec from '../assets/jin-standing-3.mp4';
-import noFourSec from '../assets/jin-standing-4.mp4';
+import d2OneSec from '../assets/jin-d2-1.mp4';
+import d2TwoSec from '../assets/jin-d2-2.mp4';
+import d2ThreeSec from '../assets/jin-d2-3.mp4';
+import d2HalfSec from '../assets/jin-d2-half.mp4';
+import d2DashOneSec from '../assets/jin-d2dash-1.mp4';
+import d2Dash38 from '../assets/jin-d2dash-38.mp4';
+import df14OneSec from '../assets/jin-df14-1.mp4';
+import df14Half from '../assets/jin-df14-half.mp4';
+import ff31OneSec from '../assets/jin-ff31-1.mp4';
+import ff31TwoSec from '../assets/jin-ff31-2.mp4';
+import ff31Long from '../assets/jin-ff31-long.mp4';
+import ws44OneSec from '../assets/jin-ws44-1.mp4';
+
 import d2Loop from '../assets/jin-just-d2.mp4'
 import styled from 'styled-components';
 import BlurDiv from './BlurDiv.jsx';
@@ -17,10 +27,24 @@ import '../styles/AboutSection.css'
 import StatsTooltip from './StatsTooltip.jsx';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
 
-const jinD2Two = {vid: d2TwoSec, vidLength: 3620, d2At: 2000, id: 0};
-const jinNoThree = {vid: noThreeSec, vidLength: 3000, d2At: -1, id: 1};
-const jinNoFour = {vid: noFourSec, vidLength: 4000, d2At: -1, id: 2};
-const vidList = [jinD2Two, jinNoThree, jinNoFour];
+const jinD2Half = {vid: d2HalfSec, d2At: 500}
+const jinD2One = {vid: d2OneSec, d2At: 1000}
+const jinD2Two = {vid: d2TwoSec, d2At: 2000};
+const jinD2Three = {vid: d2ThreeSec, d2At: 3000};
+const jinD2Dash = {vid: d2DashOneSec, d2At: 1000};
+const jinD2Dash38 = {vid: d2Dash38, d2At: 633.33333346};
+const jinDf14One = {vid: df14OneSec, d2At: -1};
+const jinDf14Half = {vid: df14Half, d2At: -1};
+const jinFf31OneSec = {vid: ff31OneSec, d2At: -1};
+const jinFf31TwoSec = {vid: ff31TwoSec, d2At: -1};
+const jinFF31Long = {vid: ff31Long, d2At: -1};
+const jinWs44OneSec = {vid: ws44OneSec, d2At: -1};
+
+const vidList = [jinD2Half, jinD2One, jinD2Two,
+     jinD2Three, jinD2Dash38, jinD2Dash, 
+     jinDf14Half, jinDf14One, jinFf31OneSec,
+     jinFf31TwoSec, jinFF31Long, jinWs44OneSec, jinD2Three, jinD2Two
+];
 
 const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, blockPercentage: 0, id: '|'};
 
@@ -63,7 +87,7 @@ const detailTextList = [
 
 export const Game = () =>{
     const [shouldBlur, setBlur] = useState(true);
-    let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (3 - 0) + 0)]);
+    let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (vidList.length - 0) + 0)]);
     let [prevVid, setPrevVid] = useState(randVid);
     const [gameStateNum, setGameStateNum] = useState(0);
     let [mainText, setMainText] = useState(gameTextList[0]);
@@ -77,7 +101,7 @@ export const Game = () =>{
     const [allowsLocalStorage, setAllowsLocalStorage] = useState(true);
     const [sessionId, setSessionID] = useState('');
     const [previousPlayerData, setPreviousData] = useState([]);
-    const [renderOnce, setRenderOnce] = useState(false);
+    const [hasRenderedOnce, setHasRenderOnce] = useState(false);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
@@ -142,16 +166,16 @@ export const Game = () =>{
             setBlur(false);
             setPrevVid(randVid);
             setIsVideoLoading(true);
-            let randNum = Math.floor(Math.random() * (2 - 0) + 0);
+            let randNum = Math.floor(Math.random() * (vidList.length - 0) + 0);
             if(vidList[randNum] == randVid){
                 videoRef.current.load();
                 videoRef.current.play();
                 console.log("same video");
-                console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
+                //console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
             }
             else{
                 console.log("different vid");
-                console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
+                //console.log(vidList[randNum].vidLength + " ___ " + prevVid.vidLength);
             }
             setRandVid(vidList[randNum]);
             console.log("random number = " + randNum);
@@ -210,14 +234,14 @@ export const Game = () =>{
     
     useEffect(() => {
         if (videoRef.current && randVid) {
-            setVideoHeight(videoRef.current.clientHeight);
+            //setVideoHeight(videoRef.current.clientHeight);
             videoRef.current.load(); // Reload the video when randVid changes
         }
     }, [randVid]);
 
     useEffect(()=>{
         console.log(videoRef.current.clientHeight);
-        setVideoHeight(videoRef.current.clientHeight);
+        //setVideoHeight(videoRef.current.clientHeight);
        
     }, [videoRef]);
 
@@ -246,7 +270,7 @@ export const Game = () =>{
                 console.log("current session id has data updating info");
                 localStorage.setItem(sessionId, JSON.stringify(playerSessionData))
             }
-            setRenderOnce(true);
+          
         }
     }, [playerSessionData, sessionId]);
     // when playersessiondata changes, update the object, and store it in local storage
@@ -261,7 +285,6 @@ export const Game = () =>{
           }
           setAllowsLocalStorage(true);
           setSessionID(crypto.randomUUID());
-          setRenderOnce(true);
           setPreviousData(getLocalData());
     },[]);  
 
@@ -345,6 +368,13 @@ export const Game = () =>{
         );
     }
 
+    const videoFirstFrameLoaded = ()=>{
+        if(!hasRenderedOnce){
+            setHasRenderOnce(true);
+            setVideoHeight(videoRef.current.clientHeight);
+        }
+    }
+
     return(
         <>
             
@@ -370,6 +400,7 @@ export const Game = () =>{
                             videoFinished = {videoDone}
                             videoLoading = {CheckIfVideoLoading}
                             isVideoLoading = {isVideoLoading}
+                            canVideoPlayFirstFrame = {videoFirstFrameLoaded}
                         >
                         </VideoPlayer>
                     </BlurDiv>
