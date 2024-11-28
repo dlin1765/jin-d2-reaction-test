@@ -380,15 +380,6 @@ export const Game = () =>{
             
             <div className={'flexParent'}>
                 <MainDiv className={'main'}>
-                    
-                    <GameText
-                        mainText={mainText}
-                        detailText={detailText}
-                        shouldBlur={shouldBlur}
-                        clickPlayAgainText={clickPlayAgainText}
-                        reactionSpeed = {reactionSpeed}
-                    >
-                    </GameText>
                     <BlurDiv
                         shouldBlur={shouldBlur}
                     >
@@ -407,6 +398,14 @@ export const Game = () =>{
                     <div className={'fillerDiv'} style={{minHeight: `${vidHeight}px`}}>
                     </div>
                 </MainDiv>
+                <GameText
+                        mainText={mainText}
+                        detailText={detailText}
+                        shouldBlur={shouldBlur}
+                        clickPlayAgainText={clickPlayAgainText}
+                        reactionSpeed = {reactionSpeed}
+                    >
+                </GameText>
             </div>
             <div className='flexParent2'>
                     <div className='flexContainer'>
@@ -548,6 +547,7 @@ export const Game = () =>{
 
 const MainDiv = styled.div`
     z-index: 1;
+    width:100%
 `;
 
 const FlexColumn = styled.div`

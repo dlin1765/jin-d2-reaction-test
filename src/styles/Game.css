@@ -4,6 +4,7 @@
     align-items: center;
     width: 100%;
     background-color: #BFD7FF;
+    flex-direction: column;
     max-height: 1080px;
 }
 

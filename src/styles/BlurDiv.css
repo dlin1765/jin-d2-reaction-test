@@ -10,7 +10,6 @@
     box-sizing:'border-box'
     */
     width: 100%;
-    margin-left: -100%;
     display: flex;
     justify-content: center;
 }
@@ -28,7 +27,6 @@
     box-sizing: border-box;
     */
     width: 100%;
-    margin-left: -100%;
     display: flex;
     justify-content: center;
     filter: blur(20px);
