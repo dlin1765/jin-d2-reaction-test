@@ -502,7 +502,7 @@ export const Game = () =>{
                             
                         </FlexRow>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            {allowsLocalStorage ?
+                            {allowsLocalStorage && localStorage.getItem('sessions') != null && JSON.parse(localStorage.getItem('sessions')).length > 1?
                                 <LineChart
                                     width = {800}
                                     height = {400}
@@ -528,7 +528,7 @@ export const Game = () =>{
                                     />
                                 </LineChart>
                                 :
-                                <div className ='cardText'>local storage disabled</div>
+                                <div className ='cardText'>You have no previous data or local storage is disabled</div>
                             }
                         </div>
                        
