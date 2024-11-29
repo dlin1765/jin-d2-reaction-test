@@ -10,7 +10,7 @@ function Button({onClick}){
                 className ='buttonContainer'
                 onClick={onClick}
             >
-                <img src='src/assets/copy-logo.png' className ='icon'></img>
+                <img src='src/assets/logo.png' className ='icon'></img>
                 <div className = 'buttonTxt'>Share your stats</div>
             </div>
         </>
