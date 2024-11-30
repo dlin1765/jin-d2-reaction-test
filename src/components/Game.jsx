@@ -16,14 +16,12 @@ import d2Loop from '../assets/jin-just-d2.mp4'
 import styled from 'styled-components';
 import BlurDiv from './BlurDiv.jsx';
 import Button from './Button.jsx'
-import { AboutSection } from './AboutSection.jsx';
 import '../styles/MainDiv.css'
 import '../styles/Game.css'
 import { VideoPlayer } from './VideoPlayer.jsx';
 import { GameText } from './GameText.jsx';
 import { Card } from './Card.jsx';
 import { StatsCard } from './StatsCard.jsx'
-import '../styles/AboutSection.css'
 import StatsTooltip from './StatsTooltip.jsx';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -68,19 +66,6 @@ const detailTextList = [
 
 
 // To-do
-// fix line height in body text and central text
-// pick a font for the website
-// pick a color scheme for the website
-// fix letter spacing for leader (negative line height)
-// 50-75 characters long for text paragraphs
-// two different font sizes for text
-// 
-// change d2 about section (change header text), remove why you should learn to react to it
-// make them bullet points 
-
-// figure out what the stats page should look like 
-// find bug where it says the video is no d2 but it actually is 
-// - its because sarah's reaction time is so slow that the video stops playing so it ju
 
 // stretch goal: get a global counter of how many d2s and how many blocked 
 
@@ -165,7 +150,6 @@ export const Game = () =>{
         else{
             setBlur(false);
             setPrevVid(randVid);
-            setIsVideoLoading(true);
             let randNum = Math.floor(Math.random() * (vidList.length - 0) + 0);
             if(vidList[randNum] == randVid){
                 videoRef.current.load();
@@ -215,7 +199,6 @@ export const Game = () =>{
     }
 
     const CheckIfVideoLoading = () =>{
-        setIsVideoLoading(false);
         if(gameStateNum == 1){
             videoRef.current.play();
             //console.log(videoRef.current.);
@@ -230,6 +213,11 @@ export const Game = () =>{
         setGameStateNum(
             (gameStateNum+1) % 3
         );
+    }
+
+    function setLoadingVideo(){
+        setIsVideoLoading(true);
+        console.log("am i firing");
     }
     
     useEffect(() => {
@@ -373,6 +361,7 @@ export const Game = () =>{
             setHasRenderOnce(true);
             setVideoHeight(videoRef.current.clientHeight);
         }
+        setIsVideoLoading(false);
     }
 
     return(
@@ -390,12 +379,13 @@ export const Game = () =>{
                             videoOnPlay = {videoOnPlay}
                             videoFinished = {videoDone}
                             videoLoading = {CheckIfVideoLoading}
-                            isVideoLoading = {isVideoLoading}
+                            isVideoLoading = {setLoadingVideo}
                             canVideoPlayFirstFrame = {videoFirstFrameLoaded}
                         >
                         </VideoPlayer>
                     </BlurDiv>
                     <div className={'fillerDiv'} style={{minHeight: `${vidHeight}px`}}>
+                        
                     </div>
                 </MainDiv>
                 <GameText
@@ -466,9 +456,9 @@ export const Game = () =>{
                             </video>
                             
                             
-                            <div className ='cardText1'>
+                            <p className ='cardText1'>
                                 <strong>Why d2 is good</strong>
-                            </div>
+                            </p>
                             <ul className = 'bulletList'> 
                                 <li className="cardText">high crushing counterhit launching low</li>
                                 <li className="cardText">only <strong>-14 on block</strong> which is not launch punishable for majority of the cast</li>
@@ -530,7 +520,7 @@ export const Game = () =>{
                                         />
                                     </LineChart>
                                     :
-                                    <div className ='cardText'>You have no previous data or local storage is disabled</div>
+                                    <div className ='cardText' style = {{textAlign: 'center'}}>You have no previous data or local storage is disabled</div>
                                 }
                             </ResponsiveContainer>
                         </div>

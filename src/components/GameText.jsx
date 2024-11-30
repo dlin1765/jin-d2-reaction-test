@@ -1,6 +1,5 @@
 import '../styles/GameText.css'
 import styled from 'styled-components';
-import CustomCounter from '../components/CustomCounter.jsx';
 
 export const GameText = ({mainText, detailText, shouldBlur, clickPlayAgainText, reactionSpeed}) =>{
 

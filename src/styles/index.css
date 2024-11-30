@@ -47,6 +47,8 @@ div{
   font-size: clamp(11.124px, 2vw, 18px);
 }
 
+
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;

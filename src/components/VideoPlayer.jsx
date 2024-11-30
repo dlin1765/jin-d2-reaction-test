@@ -1,6 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-import video from '../assets/jin-standing.mp4'
-import video2 from '../assets/jin-d2.mp4'
 
 /*
 /*
@@ -62,10 +60,9 @@ export const VideoPlayer = ({vid, videoClicked, videoRef, videoOnPlay, videoFini
                     onLoadedData={videoLoading}
                     onCanPlay={canVideoPlayFirstFrame}
                     key={key}
-                    onError={
-                        console.log("vid name: " + vid.vid.source)
-                    }
+                    onLoadStart={isVideoLoading}
                     preload='auto'
+                    poster='src/assets/jin-d2-1_000.png'
                     style = {{zIndex: 4, height: '100%', width: 'clamp(300px, 65%, 1280px)'}}
                 >
                 <source src={vid.vid} type = "video/mp4" />

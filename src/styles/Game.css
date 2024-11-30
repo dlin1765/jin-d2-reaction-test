@@ -9,8 +9,10 @@
 }
 
 .fillerDiv{
+    /*width: clamp(300px, 65%, 1280px);*/
     width: 100%;
     margin-left: -100%;
+    /*background-color: black;*/
     max-height: 1080px;
     pointer-events: none;
 }

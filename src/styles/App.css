@@ -1,0 +1,39 @@
+.socials{
+    width: 100%;
+    background-color: #e6e8f4;
+    display: flex;
+    justify-content: center;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 0px 0px 36px 0px;
+
+}
+
+.contact{
+    color: black;
+    font-size: 11.124px;
+
+}
+
+.logo{
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+
+}
+
+.logoContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.logoContainer:hover{
+    background-color: lightgrey;
+}
