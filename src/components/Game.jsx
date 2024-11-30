@@ -70,7 +70,7 @@ const detailTextList = [
 // stretch goal: get a global counter of how many d2s and how many blocked 
 
 
-export const Game = () =>{
+export const Game = ({statsClicked, clearClicked}) =>{
     const [shouldBlur, setBlur] = useState(true);
     let [randVid, setRandVid] = useState(vidList[Math.floor(Math.random() * (vidList.length - 0) + 0)]);
     let [prevVid, setPrevVid] = useState(randVid);
@@ -352,8 +352,9 @@ export const Game = () =>{
 
     const getStatsButtonClicked = () =>{
         navigator.clipboard.writeText(
-            `Jin d2 reaction test\n🎯 ${playerSessionData.d2sBlocked}/${playerSessionData.numberOfD2s} blocked\n⏱️ ${playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms avg\n🔥 ${playerSessionData.longestStreak[1]} streak\n⁉️ ${playerSessionData.wrongReactionNum} wrong reactions\n✖️ late by ${playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms avg`
+            `Jin d2 reaction test\n🎯 ${playerSessionData.d2sBlocked}/${playerSessionData.numberOfD2s} blocked\n⏱️ ${playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms avg\n🔥 ${playerSessionData.longestStreak[1]} streak\n⁉️ ${playerSessionData.wrongReactionNum} wrong reactions\n❌ late by ${playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms avg`
         );
+        statsClicked();
     }
 
     const videoFirstFrameLoaded = ()=>{
@@ -482,6 +483,7 @@ export const Game = () =>{
                                     className = 'cardText'
                                     onClick={()=>{
                                         localStorage.clear();
+                                        clearClicked();
                                     }}
                                 >
                                     Clear local storage data

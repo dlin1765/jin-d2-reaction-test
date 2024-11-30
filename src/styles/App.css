@@ -37,3 +37,12 @@
 .logoContainer:hover{
     background-color: lightgrey;
 }
+
+.flexMsgBox{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    position: sticky;
+    height: 0px;
+    top: 15vh;
+}
