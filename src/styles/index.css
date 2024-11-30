@@ -1,5 +1,5 @@
 :root {
-  font-family: Hind, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
@@ -27,12 +27,31 @@ body {
   min-height: 100vh;
 }
 
+p{
+  font-size: clamp(11.124px, 2vw, 29.124px);
+}
+
+h1{
+  font-size: clamp(18px, 3.1vw, 47.1px);
+}
+
+.headerText{
+  font-size: clamp(11.124px, 2vw, 29.124px);
+}
+
+li{
+  font-size: clamp(11.124px, 2vw, 18px);
+}
+
+div{
+  font-size: clamp(11.124px, 2vw, 18px);
+}
 
 button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: clamp(11.124px, 2vw, 18px);
   font-weight: 400;
   font-family: inherit;
   background-color: white;

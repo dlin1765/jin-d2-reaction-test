@@ -8,16 +8,14 @@
     flex-direction: column;
     background-color: white;
     padding:30px;
-    box-shadow: rgba(235, 91, 91, 0.1) 0px 2px 5px;;
+    box-shadow: rgba(235, 91, 91, 0.1) 0px 2px 5px;
     border-radius: 5px;
-    flex:0 0 .5;
     flex-wrap: nowrap;
     flex-grow: 1;
 }
 
 .headerText{
     font-weight: 500;
-    font-size: 2em;
     color: black;
 }
 
@@ -29,7 +27,6 @@
 
 .cardText{
     font-weight: 400;
-    font-size: large;
     margin: 15px 0px;
     color: black;
 }

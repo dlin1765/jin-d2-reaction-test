@@ -25,7 +25,7 @@ import { Card } from './Card.jsx';
 import { StatsCard } from './StatsCard.jsx'
 import '../styles/AboutSection.css'
 import StatsTooltip from './StatsTooltip.jsx';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, Tooltip, ResponsiveContainer } from 'recharts';
 
 const jinD2Half = {vid: d2HalfSec, d2At: 500}
 const jinD2One = {vid: d2OneSec, d2At: 1000}
@@ -58,7 +58,7 @@ const gameTextList = [
 
 ];
 const detailTextList = [
-    "When Jin does d2, click the video again to block, don't be late or too early!",
+    "Click the video to begin! When Jin does d2, click again to block",
     "You pressed down before the move started, try to only block when you see d2!",
     "You were a bit slow on the reaction, try again!",
     "You reacted to d2! Keep it up!",
@@ -467,7 +467,7 @@ export const Game = () =>{
                             
                             
                             <div className ='cardText1'>
-                                Why d2 is good
+                                <strong>Why d2 is good</strong>
                             </div>
                             <ul className = 'bulletList'> 
                                 <li className="cardText">high crushing counterhit launching low</li>
@@ -501,35 +501,38 @@ export const Game = () =>{
                              }
                             
                         </FlexRow>
-                        <div style={{display: 'flex', justifyContent: 'center'}}>
-                            {allowsLocalStorage && localStorage.getItem('sessions') != null && JSON.parse(localStorage.getItem('sessions')).length > 1?
-                                <LineChart
-                                    width = {800}
-                                    height = {400}
-                                    margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                                    data={previousPlayerData}
-                                >
-                                    <CartesianGrid stroke="#ccc" />
-                                    <XAxis>
-                                    <Label
-                                        value={'previous play sessions'}
-                                        offset={0}
-                                        position={'insideBottom'}
-                                    />
-                                    </XAxis>
-                                    <YAxis
-                                        label={{value: 'd2 block %', angle: -90, position: 'insideLeft'}}
-                                    />
-                                    <Line type="monotone" dataKey="blockPercentage" stroke="#82ca9d" />
-                                    <Tooltip
-                                        content={<StatsTooltip
-                                            payload={previousPlayerData}
-                                        />}
-                                    />
-                                </LineChart>
-                                :
-                                <div className ='cardText'>You have no previous data or local storage is disabled</div>
-                            }
+                        <div className='graph'>
+                            <ResponsiveContainer
+                                width={'100%'}
+                                height={'100%'}
+                            >
+                                {allowsLocalStorage && localStorage.getItem('sessions') != null && JSON.parse(localStorage.getItem('sessions')).length > 1?
+                                    <LineChart
+                                        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                                        data={previousPlayerData}
+                                    >
+                                        <CartesianGrid stroke="#ccc" />
+                                        <XAxis>
+                                        <Label
+                                            value={'previous play sessions'}
+                                            offset={0}
+                                            position={'insideBottom'}
+                                        />
+                                        </XAxis>
+                                        <YAxis
+                                            label={{value: 'd2 block %', angle: -90, position: 'insideLeft'}}
+                                        />
+                                        <Line type="monotone" dataKey="blockPercentage" stroke="#82ca9d" />
+                                        <Tooltip
+                                            content={<StatsTooltip
+                                                payload={previousPlayerData}
+                                            />}
+                                        />
+                                    </LineChart>
+                                    :
+                                    <div className ='cardText'>You have no previous data or local storage is disabled</div>
+                                }
+                            </ResponsiveContainer>
                         </div>
                        
                         
