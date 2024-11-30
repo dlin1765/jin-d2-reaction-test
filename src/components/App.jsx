@@ -3,17 +3,10 @@ import '../styles/App.css'
 import Header from '../components/Header.jsx'
 import {Game} from '../components/Game.jsx'
 import {VideoPlayer} from '../components/VideoPlayer.jsx'
+import svgLogo from '../assets/twitter-logo.svg'
 
 
 function App() {
-  
-
-//   <div style = {{padding: "32px", backgroundColor:'lightblue', zIndex: 2}}>
-//   <VideoPlayer />
-// </div>
-  const twitterClicked = () =>{
-
-  }
 
   return (
     <>
@@ -29,7 +22,7 @@ function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <object data="src/assets/twitter-logo.svg" type="image/svg+xml" className='logo'>
+                <object data= {svgLogo} type="image/svg+xml" className='logo'>
                 
                 </object>
               </a>
