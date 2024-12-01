@@ -11,4 +11,4 @@ function PopupMessage({text}){
     );
 }
 
-export default PopupMessage;
+export default PopupMessage

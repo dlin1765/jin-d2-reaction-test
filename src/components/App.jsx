@@ -10,7 +10,7 @@ import PopupMessage from './PopupMessage.jsx'
 
 function App() {
 
-  const [shouldDisplayMessage, setDisplayCopiedButtonPressed] = useState('');
+  const [shouldDisplayMessage, setDisplayCopiedButtonPressed] = useState('Stats copied to clipboard!');
 
 
   function displayCopiedMessage(){
