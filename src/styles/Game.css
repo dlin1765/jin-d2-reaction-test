@@ -45,5 +45,8 @@
     align-self: center;
     width: clamp(300px, 41.819vw, 1000px);
     min-height: clamp(100px, 20.91vw, 500px);
+}
 
+.otherMoveBtn:hover{
+    content: '';
 }

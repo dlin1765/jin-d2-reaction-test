@@ -54,21 +54,24 @@ button {
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: clamp(11.124px, 2vw, 18px);
+  color: black;
   font-weight: 400;
   font-family: inherit;
   background-color: white;
   cursor: pointer;
   transition: border-color 0.25s;
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto black;
 }
 button:hover {
-  background-color: lightgray
+  background-color: lightgray;
+  color: black;
 }
 
 
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  color: black;
+  outline: 4px auto black;
   background-color: gray;
 }
 
