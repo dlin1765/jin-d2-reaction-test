@@ -56,7 +56,7 @@ const gameTextList = [
 
 ];
 const detailTextList = [
-    "Click the video to begin! When Jin does d2, click again to block",
+    "Click the video to begin! When Jin does d2, click again or press S to block",
     "You pressed down before the move started, try to only block when you see d2!",
     "You were a bit slow on the reaction, try again!",
     "You reacted to d2! Keep it up!",
@@ -171,6 +171,69 @@ export const Game = ({statsClicked, clearClicked}) =>{
         }
         console.log("game state num = " + gameStateNum);
     }   
+
+    function handleReaction(){
+        if(gameStateNum == 1){
+            if(randVid.d2At != -1 && isVideoPlaying){
+                const currentTime = videoRef.current.currentTime * 1000;
+                const moveAt = Math.abs(randVid.d2At);
+                // d2 video and clicked early
+                if(currentTime < moveAt){
+                    console.log("too early");
+                    addD2BlockStreak(false);
+                    setCurrentReactionTime(-1);
+                    displayResults(1);
+                }
+                // d2 video and clicked right
+                else if(currentTime > moveAt  && currentTime <= (moveAt + 366.6674)){
+                    console.log("blocked");
+                    addD2Blocked();
+                    setReactionTime(((currentTime - moveAt)));
+                    setCurrentReactionTime(currentTime - moveAt);
+                    addD2BlockStreak(true);
+                    displayResults(3);
+                }
+                // d2 video and clicked late
+                else{
+                    console.log("too late!");
+                    setReactionTime(((currentTime - moveAt)));
+                    setCurrentReactionTime(currentTime - moveAt);
+                    setReactionTimeEarly(((currentTime - (moveAt + 366.6674))));
+                    addD2BlockStreak(false);
+                    displayResults(2);
+                }
+                console.log('current time = ' + currentTime);
+                setGameStateNum(gameStateNum + 1);
+                addD2Num();
+            }
+            else{
+                // if the video has no d2 and you clicked
+                displayResults(4);
+                addD2BlockStreak(false);
+                setCurrentReactionTime(-1);
+                setMissedReactions();
+                console.log("no d2 what are you reacting to!");
+            } 
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('keydown', sKeyPressed);
+        //window.addEventListener('keydown', escKeyPressed);
+
+        return() => {
+            window.removeEventListener('keydown', sKeyPressed);
+            //window.removeEventListener('keydown', escKeyPressed);
+        };
+    });
+
+    const sKeyPressed = (event) =>{
+        
+        if(event.code == 'KeyS'){
+            console.log("S key pressed");
+            handleReaction();
+        }
+    }
 
     const videoOnPlay = () =>{
         setVideoPlaying(
@@ -514,7 +577,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                                         <YAxis
                                             label={{value: 'd2 block %', angle: -90, position: 'insideLeft'}}
                                         />
-                                        <Line type="monotone" dataKey="blockPercentage" stroke="#82ca9d" />
+                                        <Line type="monotone" dataKey="blockPercentage" stroke="#82ca9d" strokeWidth={2} fill='#82ca9d' />
                                         <Tooltip
                                             content={<StatsTooltip
                                                 payload={previousPlayerData}
