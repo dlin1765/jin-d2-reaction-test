@@ -8,7 +8,7 @@ export const GameText = ({mainText, detailText, shouldBlur, clickPlayAgainText, 
             
             <div className={'textContainer'}>
                 {shouldBlur &&
-                    <h1 className={'mainText'}>{mainText} {reactionSpeed != -1 ? Math.floor(reactionSpeed) +'ms' : ''}</h1>
+                    <h1 className={'mainText'}>{mainText} {reactionSpeed != -1 ? Math.floor(reactionSpeed) +'ms ' +  (reactionSpeed / 16.6666667).toFixed(2) + ' frames': ''}</h1>
                 }
                 {shouldBlur &&
                     <p className = {'detailText'}>{detailText}</p>
