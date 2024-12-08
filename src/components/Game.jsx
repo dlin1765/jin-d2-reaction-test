@@ -44,7 +44,7 @@ const vidList = [jinD2Half, jinD2One, jinD2Two,
      jinFf31TwoSec, jinWs44OneSec, jinFf31OneSec,
 ];
 
-const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, blockPercentage: 0, id: '|'};
+const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, blockPercentage: 0, totalReactions: 0, id: '|'};
 
 const gameTextList = [
     'Can you react to Jin D2?',
@@ -107,6 +107,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
             );
             setBlur(false);
             videoRef.current.play();
+            
         }
         else if(gameStateNum == 1){
                 if(randVid.d2At != -1 && isVideoPlaying){
@@ -142,6 +143,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                     console.log('current time = ' + currentTime);
                     setGameStateNum(gameStateNum + 1);
                     addD2Num();
+                    setTotalReactions();
                 }
                 else{
                     // if the video has no d2 and you clicked
@@ -150,8 +152,10 @@ export const Game = ({statsClicked, clearClicked}) =>{
                     addD2BlockStreak(false);
                     setCurrentReactionTime(-1);
                     setMissedReactions();
+                    setTotalReactions();
                     console.log("no d2 what are you reacting to!");
                 } 
+                
         }
         else{
             setBlur(false);
@@ -170,7 +174,6 @@ export const Game = ({statsClicked, clearClicked}) =>{
             }
             setRandVid(vidList[randNum]);
             console.log("random number = " + randNum);
-            
             setGameStateNum(
                 (gameStateNum - 1)
             );
@@ -214,6 +217,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                 console.log('current time = ' + currentTime);
                 setGameStateNum(gameStateNum + 1);
                 addD2Num();
+                setTotalReactions();
             }
             else{
                 // if the video has no d2 and you clicked
@@ -222,6 +226,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                 setCurrentReactionTime(-1);
                 setMissedReactions();
                 setBackgroundColor(wrongColor);
+                setTotalReactions();
                 console.log("no d2 what are you reacting to!");
             } 
         }
@@ -259,6 +264,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
             displayResults(5);
             console.log("good patience");
             setCurrentReactionTime(-1);
+            setTotalReactions();
         }
         else if(gameStateNum == 1 && randVid.d2At != -1){
             displayResults(2);
@@ -268,6 +274,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
             setReactionTime(((videoRef.current.currentTime * 1000 - randVid.d2At)));
             setReactionTimeEarly(((videoRef.current.currentTime * 1000 - (randVid.d2At + 366.6674))));
             setBackgroundColor(wrongColor)
+            setTotalReactions();
             console.log("too late");
         }
     }
@@ -410,6 +417,13 @@ export const Game = ({statsClicked, clearClicked}) =>{
         }));
     }
 
+    function setTotalReactions(){
+        setSessionData(prevData =>({
+            ...prevData,
+            totalReactions: prevData.totalReactions + 1
+        }));
+    }
+
     function getLocalData(){
         if(allowsLocalStorage){
             let sessionList = JSON.parse(localStorage.getItem('sessions'));
@@ -426,7 +440,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
 
     const getStatsButtonClicked = () =>{
         navigator.clipboard.writeText(
-            `Jin d2 reaction test\n🎯 ${playerSessionData.d2sBlocked}/${playerSessionData.numberOfD2s} blocked\n⏱️ ${playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms avg\n🔥 ${playerSessionData.longestStreak[1]} streak\n⁉️ ${playerSessionData.wrongReactionNum} wrong reactions\n❌ late by ${playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms avg`
+            `Jin d2 reaction test\n🎯 ${playerSessionData.d2sBlocked}/${playerSessionData.numberOfD2s} d2s blocked\n✅ ${playerSessionData.totalReactions - playerSessionData.wrongReactionNum - (playerSessionData.numberOfD2s - playerSessionData.d2sBlocked)+ '/' + playerSessionData.totalReactions} all correct reactions\n⏱️ ${playerSessionData.avgReactionTimeD2[1] != 0 ? (Math.floor(playerSessionData.avgReactionTimeD2[0] /playerSessionData.avgReactionTimeD2[1])) : 0} ms avg\n🔥 ${playerSessionData.longestStreak[1]} streak\n⁉️ ${playerSessionData.wrongReactionNum} wrong reactions\n❌ late by ${playerSessionData.avgReactionMiss[1] != 0 ? (Math.floor(playerSessionData.avgReactionMiss[0] / playerSessionData.avgReactionMiss[1])) : 0} ms avg`
         );
         statsClicked();
     }
@@ -487,6 +501,11 @@ export const Game = ({statsClicked, clearClicked}) =>{
                                     <FlexRow>
                                         <div className='statsText'>d2 block percentage:</div>
                                         <div className = 'statsText'><strong>{playerSessionData.numberOfD2s != 0 ? (playerSessionData.blockPercentage) : 0}%, {playerSessionData.d2sBlocked} / {playerSessionData.numberOfD2s}</strong></div>
+                                    </FlexRow>
+
+                                    <FlexRow>
+                                        <div className='statsText'>total correct reactions:</div>
+                                        <div className = 'statsText'><strong>{playerSessionData.totalReactions != 0 ?  Math.floor((((playerSessionData.totalReactions - playerSessionData.wrongReactionNum) - (playerSessionData.numberOfD2s - playerSessionData.d2sBlocked)) * 100) / playerSessionData.totalReactions) : 0}%, {playerSessionData.totalReactions - playerSessionData.wrongReactionNum - (playerSessionData.numberOfD2s - playerSessionData.d2sBlocked)} / {playerSessionData.totalReactions}</strong></div>
                                     </FlexRow>
                             </StatsCard>
                             <StatsCard>
