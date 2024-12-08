@@ -41,7 +41,7 @@ const jinWs44OneSec = {vid: ws44OneSec, d2At: -1};
 const vidList = [jinD2Half, jinD2One, jinD2Two,
       jinD2Dash38, jinD2Dash, 
      jinFf31OneSec, jinD2Half, jinD2Dash38, jinD2Dash, 
-     jinFf31TwoSec, jinWs44OneSec, jinFf31OneSec,
+     jinFf31TwoSec, jinWs44OneSec, jinFf31OneSec, jinWs44OneSec,jinFf31TwoSec,
 ];
 
 const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, blockPercentage: 0, totalReactions: 0, id: '|'};
