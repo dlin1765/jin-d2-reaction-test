@@ -61,7 +61,9 @@ function App() {
                 
                 </object>
               </a>
-              
+        </div>
+        <div className='container contact'>
+          developed by CatPie / Daniel Lin
         </div>
       </div>
     </>

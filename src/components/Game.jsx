@@ -39,9 +39,9 @@ const jinFF31Long = {vid: ff31Long, d2At: -1};
 const jinWs44OneSec = {vid: ws44OneSec, d2At: -1};
 
 const vidList = [jinD2Half, jinD2One, jinD2Two,
-     jinD2Three, jinD2Dash38, jinD2Dash, 
-     jinDf14Half, jinDf14One, jinFf31OneSec,
-     jinFf31TwoSec, jinFF31Long, jinWs44OneSec, jinD2Three, jinD2Two
+      jinD2Dash38, jinD2Dash, 
+     jinFf31OneSec, jinD2Half, jinD2Dash38, jinD2Dash, 
+     jinFf31TwoSec, jinWs44OneSec, jinFf31OneSec,
 ];
 
 const defaultSessionData = {numberOfD2s: 0, d2sBlocked: 0, avgReactionTimeD2: [0,0], avgReactionMiss: [0,0], longestStreak: [0,0], wrongReactionNum: 0, blockPercentage: 0, id: '|'};
@@ -64,6 +64,8 @@ const detailTextList = [
     "Good job only reacting to the d2 animation!"
 ];
 
+const rightColor = '#BFD7FF'
+const wrongColor = '#FF6962';
 
 // To-do
 
@@ -87,6 +89,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
     const [sessionId, setSessionID] = useState('');
     const [previousPlayerData, setPreviousData] = useState([]);
     const [hasRenderedOnce, setHasRenderOnce] = useState(false);
+    const [backgroundColor, setBackgroundColor] = useState(rightColor);
 
     const [, rerender] = useState(0);
     const videoRef = useRef(null);
@@ -115,6 +118,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                         addD2BlockStreak(false);
                         setCurrentReactionTime(-1);
                         displayResults(1);
+                        setBackgroundColor(wrongColor);
                     }
                     // d2 video and clicked right
                     else if(currentTime > moveAt  && currentTime <= (moveAt + 366.6674)){
@@ -128,6 +132,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                     // d2 video and clicked late
                     else{
                         console.log("too late!");
+                        setBackgroundColor(wrongColor);
                         setReactionTime(((currentTime - moveAt)));
                         setCurrentReactionTime(currentTime - moveAt);
                         setReactionTimeEarly(((currentTime - (moveAt + 366.6674))));
@@ -140,6 +145,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                 }
                 else{
                     // if the video has no d2 and you clicked
+                    setBackgroundColor(wrongColor);
                     displayResults(4);
                     addD2BlockStreak(false);
                     setCurrentReactionTime(-1);
@@ -150,6 +156,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
         else{
             setBlur(false);
             setPrevVid(randVid);
+            setBackgroundColor(rightColor);
             let randNum = Math.floor(Math.random() * (vidList.length - 0) + 0);
             if(vidList[randNum] == randVid){
                 videoRef.current.load();
@@ -183,6 +190,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                     addD2BlockStreak(false);
                     setCurrentReactionTime(-1);
                     displayResults(1);
+                    setBackgroundColor(wrongColor);
                 }
                 // d2 video and clicked right
                 else if(currentTime > moveAt  && currentTime <= (moveAt + 366.6674)){
@@ -201,6 +209,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                     setReactionTimeEarly(((currentTime - (moveAt + 366.6674))));
                     addD2BlockStreak(false);
                     displayResults(2);
+                    setBackgroundColor(wrongColor);
                 }
                 console.log('current time = ' + currentTime);
                 setGameStateNum(gameStateNum + 1);
@@ -212,6 +221,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
                 addD2BlockStreak(false);
                 setCurrentReactionTime(-1);
                 setMissedReactions();
+                setBackgroundColor(wrongColor);
                 console.log("no d2 what are you reacting to!");
             } 
         }
@@ -257,6 +267,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
             setCurrentReactionTime(videoRef.current.currentTime * 1000 -  randVid.d2At);
             setReactionTime(((videoRef.current.currentTime * 1000 - randVid.d2At)));
             setReactionTimeEarly(((videoRef.current.currentTime * 1000 - (randVid.d2At + 366.6674))));
+            setBackgroundColor(wrongColor)
             console.log("too late");
         }
     }
@@ -431,7 +442,7 @@ export const Game = ({statsClicked, clearClicked}) =>{
     return(
         <>
             
-            <div className={'flexParent'}>
+            <div className={'flexParent'} style={{backgroundColor: backgroundColor}}>
                 <MainDiv className={'main'}>
                     <BlurDiv
                         shouldBlur={shouldBlur}
